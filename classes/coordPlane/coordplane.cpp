@@ -228,7 +228,7 @@ double CoordPlane::GetToY() {
     double toY = this->toY;
 
     if(toY == 0) {
-        double startY = this->GetY();
+        //double startY = this->GetY();
         double fromY = this->GetFromY();
         double step  = this->GetStep();
         int    lines = this->GetYLines() - 1 ;//(startY == fromY ? 1);
@@ -591,11 +591,14 @@ void CoordPlane::ShowCoordLines() {
 void CoordPlane::ShowCoordLineNums() {
     QPen pen(QColor(175, 175, 175));
 
+    int numsXLines = this->GetYLines();
+    double canvasLeftMargin = this->GetCanvasLeftMargin();
     double currX, canvasX;
     //std::cout << "\n\nGetSteps: " << this->GetSteps() << "\n\n\n";
     double realHeightCanvas = this->GetUsedCanvasHeight() - 5;
-    for(int i=0/*(canvasLinesMargins[0]==0 ? 0 : 1)*/; i < this->maxLines-(this->canvasVMargin==0 ? 0 : 1); i++) {
-        canvasX = (i + this->canvasVMargin) * this->GetStepCanvasWidth(); // Вывод координат canvas
+    for(int i=0/*(canvasLinesMargins[0]==0 ? 0 : 1)*/; i < numsXLines /*this->maxLines-(this->canvasVMargin==0 ? 0 : 1)*/; i++) {
+        //canvasX = (i + this->canvasVMargin) * this->GetStepCanvasWidth(); // Вывод координат canvas
+        canvasX = (i /*+ this->canvasHMargin*/) * this->GetStepCanvasWidth() + canvasLeftMargin; // Вывод координат canvas
         currX = coordLinesX[i]; // Вывод реальных координат
         std::string currXString = toHandleNumber( std::to_string(currX) );
         QGraphicsTextItem *textItem = new QGraphicsTextItem(QString::fromUtf8(currXString.c_str()));
@@ -609,7 +612,7 @@ void CoordPlane::ShowCoordLineNums() {
     //scene->addLine(-10, this->realHeightCanvas-5, -11, this->realHeightCanvas-6, pen1);
 
 
-    int numsLines = this->GetYLines();
+    int numsYLines = this->GetYLines();
     double canvasTopMargin = this->GetCanvasTopMargin();
     double currY, canvasY;
 
@@ -618,7 +621,7 @@ void CoordPlane::ShowCoordLineNums() {
     textItem0->setPos(0, 0);
     scene->addItem(textItem0);
 
-    for(int i=0; i < numsLines; i++) {
+    for(int i=0; i < numsYLines; i++) {
         canvasY = (i /*+ this->canvasHMargin*/) * this->GetStepCanvasHeight() + canvasTopMargin; // Вывод координат canvas
         currY = coordLinesY[i]; // Вывод реальных координат
         std::string currYString = toHandleNumber( std::to_string(currY) );

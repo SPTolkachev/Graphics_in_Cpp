@@ -30,7 +30,6 @@ void MainWindow::on_renderButton_clicked() { // Нажатие на кнопку
 ******  Кнопки изменения видимой части координатной плоскости   *****
 *********************************************************************
 */
-
 void MainWindow::on_scalePlane_valueChanged(double arg1) {
     this->cplane->SetScale(arg1);
     std::cout << "SetScale(" << arg1 << ")\n";
@@ -45,8 +44,7 @@ void MainWindow::on_to_upButton_clicked() {
     this->ShowGraph(); // Отрисовка
 }
 
-void MainWindow::on_to_rightButton_clicked()
-{
+void MainWindow::on_to_rightButton_clicked() {
     double newX = this->cplane->GetX() + ui->to_rightStep->value();
     this->cplane->SetX(newX);
     std::cout << "SetX+(" << newX << ")\n";
