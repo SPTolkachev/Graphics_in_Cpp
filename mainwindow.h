@@ -17,6 +17,19 @@ public:
     ~MainWindow();
     void ShowGraph();
 
+private slots:
+    void on_renderButton_clicked();
+
+    void on_scalePlane_valueChanged(double arg1);
+
+    void on_to_upButton_clicked();
+
+    void on_to_rightButton_clicked();
+
+    void on_to_downButton_clicked();
+
+    void on_to_leftButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     CoordPlane *cplane;
