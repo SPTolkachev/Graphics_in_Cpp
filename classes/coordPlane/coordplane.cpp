@@ -2,7 +2,7 @@
 #include <iostream>
 #include <math.h>
 
-CoordPlane::CoordPlane(Ui::MainWindow *ui, /* QGraphicsView scene, */double x, double y, double scale/*, int steps*/) {
+CoordPlane::CoordPlane(Ui::MainWindow *ui, /*QGraphicsView *scene,*/ double x, double y, double scale) {
     this->SetX(x);
     this->SetY(y);
     this->SetScale(scale);
@@ -27,7 +27,7 @@ double CoordPlane::GetXe() {
     //std::cout << "Xe* = " << Xe << ";\n";
     if(Xe == 0) {
         Xe = this->GetX() + this->GetScale();
-        if(this->debug) std::cout << "Xe = " << Xe << ";\n";
+        if(this->debug) { std::cout << "Xe = " << this->GetX() << " + " << this->GetScale() << " = " << Xe << ";\n"; }
         this->SetXe(Xe);
     }
     return Xe;
@@ -142,7 +142,7 @@ int CoordPlane::GetYLines() {
         double currentStep = fromY;
         //lines = 1;
         //std::cout << "***" << currentStep + stepLength << " <= " << toY << "\n";
-        if(this->debug) std::cout << fromY << " -> " << toY << "\n";
+        if(this->debug) std::cout << "Y: " << fromY << " -> " << toY << "\n";
         if(this->debug) std::cout  << "YLines: " << currentStep << ", ";
         while(currentStep - stepLength >= toY) {
             lines++;
@@ -171,11 +171,11 @@ double CoordPlane::GetFromX() {
         remainder = correctX >= 0 ? -remainder : remainder;
         fromX = (correctX - remainder ) / 100;
         if(this->debug) {
-            std::cout << "fromX = (" << correctX << " - (" << correctX << " % (" << stepLength << " * " << 100 << ") ) ) / " << 100 << "    =    ";
-            std::cout <<  "(" << correctX << " - (" << correctX << " % (" << stepLength * 100 << ") ) ) / " << 100 << "    =    ";
-            std::cout <<  "(" << correctX << " - (" << (correctX % (stepLength * 100)) << ") ) / " << 100 << "    =    ";
+            std::cout << "fromX = (" << correctX << " - (" << (correctX >= 0 ? "-" : "") << correctX << " % (" << stepLength << " * " << 100 << ") ) ) / " << 100 << "    =    ";
+            std::cout <<  "(" << correctX << " - (" << (correctX >= 0 ? "-" : "") << correctX << " % (" << stepLength * 100 << ") ) ) / " << 100 << "    =    ";
+            std::cout <<  "(" << correctX << " - (" << (correctX >= 0 ? "-" : "") << (correctX % (stepLength * 100)) << ") ) / " << 100 << "    =    ";
             std::cout <<  "(" << (correctX + (correctX % (stepLength * 100))) << ") / " << 100 << "     =     ";
-            std::cout <<  (correctX + (correctX % (stepLength * 100) ) ) / 100 << "\n";
+            std::cout <<  fromX << "\n";
         }
 
         this->SetFromX(fromX);
@@ -355,8 +355,6 @@ void CoordPlane::SetUsedCanvasWidth(double width) {
     this->realWidthCanvas = width;
 }
 
-
-
 double CoordPlane::GetUsedCanvasHeight() {
     double realHeightCanvas = this->realHeightCanvas;
     if(realHeightCanvas == 0) {
@@ -373,11 +371,42 @@ void CoordPlane::SetUsedCanvasHeight(double height) {
 
 
 
+double CoordPlane::GetX_PsiP() { // Points in Point
+    double X_PsiP = this->X_PsiP;
+
+    if(X_PsiP == 0) {
+        X_PsiP = ( this->GetScale() / this->GetUsedCanvasWidth() );
+        if(this->debug) std::cout << "X_PsiP = " << X_PsiP << "\n";
+    }
+    return X_PsiP;
+}
+
+double CoordPlane::SetX_PsiP(double coeff) {
+    this->X_PsiP = coeff;
+}
+
+
+double CoordPlane::GetY_PsiP() { // Points in Point
+    double Y_PsiP = this->Y_PsiP;
+
+    if(Y_PsiP == 0) {
+        Y_PsiP = ( this->GetScale() / this->GetUsedCanvasHeight() );
+        if(this->debug) std::cout << "Y_PsiP = " << Y_PsiP << "\n";
+    }
+    return Y_PsiP;
+}
+
+double CoordPlane::SetY_PsiP(double coeff) {
+    this->Y_PsiP = coeff;
+}
+
+
+
 
 double CoordPlane::GetCanvasLeftMargin() {
     double canvasLeftMargin = this->canvasLeftMargin;
 
-    if(canvasLeftMargin == this->default_canvasLeftMargin) {
+    if(canvasLeftMargin == this->defaultDouble) {
         canvasLeftMargin = this->GetProcentMarginLeft() * this->GetUsedCanvasWidth();
        if(this->debug) std::cout << "canvasLeftMargin = " << this->GetProcentMarginLeft() << " * " << this->GetUsedCanvasWidth() << " = " << canvasLeftMargin << "\n";
         this->SetCanvasLeftMargin(canvasLeftMargin);
@@ -395,7 +424,7 @@ void CoordPlane::SetCanvasLeftMargin(double canvasLeftMargin) {
 double CoordPlane::GetCanvasTopMargin() { //GetCanvasHMargin
     double canvasTopMargin = this->canvasTopMargin;
 
-    if(canvasTopMargin == this->default_canvasTopMargin) {
+    if(canvasTopMargin == this->defaultDouble) {
         //double scale = this->GetScale();
         //double margin = this->GetY() - this->GetFromY();
         /*canvasTopMargin = (margin / scale) * this->GetUsedCanvasHeight();
@@ -714,12 +743,21 @@ void CoordPlane::clearScene() {
     this->scene = new QGraphicsScene(ui->graphicsView);
 }
 
+QGraphicsScene *CoordPlane::GetScene() {
+    return this->scene;
+}
+
+void CoordPlane::SetScene() {
+    ui->graphicsView->setScene(this->scene);
+}
 
 /**
  * @brief CoordPlane::Show
  * Функция отображения координатной плоскости
  */
 void CoordPlane::Show() {
+    // Обнуляем ненужные свойства
+    this->resetWorkProperties();
     // Назначем значения высоты и ширины холста
 
 
@@ -731,10 +769,8 @@ void CoordPlane::Show() {
     ui->graphicsView->setAlignment(Qt::AlignLeft | Qt::AlignBottom);
     ui->graphicsView->setScene(scene);
 
-    if(this->debug) std::cout << "-------------------------------------------\n\n\n";
 
-    // Обнуляем ненужные свойства
-    this->resetWorkProperties();
+
 
     //Это как раз создана сцена. Сцена - это класс для работы с 2D графикой.
     //Теперь, раз это график, то построим координатные оси X и Y.
@@ -803,7 +839,7 @@ void CoordPlane::Show() {
 double CoordPlane::GetProcentMarginLeft() {
     double marginLeft = this->procentMarginLeft;
 
-    if(marginLeft == this->default_procentMarginLeft) {
+    if(marginLeft == this->defaultDouble) {
         double correctX     = this->GetX() * 100;
         double correctFromX = this->GetFromX() * 100;
         double correctScale = this->GetScale() * 100;
@@ -829,7 +865,7 @@ void CoordPlane::SetProcentMarginLeft(double pml) {
 double CoordPlane::GetProcentMarginRight() {
     double marginRight = this->procentMarginRight;
 
-    if(marginRight == this->default_procentMarginRight) {
+    if(marginRight == this->defaultDouble) {
         double correctXe = this->GetXe() * 100;
         double correctToX  = this->GetToX() * 100;
         double correctScale = this->GetScale() * 100;
@@ -852,7 +888,7 @@ void CoordPlane::SetProcentMarginRight(double pmr) {
 double CoordPlane::GetProcentMarginTop() {
     double marginTop = this->procentMarginTop;
 
-    if(marginTop == this->default_procentMarginTop) {
+    if(marginTop == this->defaultDouble) {
         marginTop = (this->GetY() - this->GetFromY()) / this->GetScale();
         if(this->debug) std::cout << "marginTop = " <<  "(" << this->GetY() <<" - " << this->GetFromY() << ") / " << this->GetScale() << " = " << marginTop << "\n";
     }
@@ -867,7 +903,7 @@ void CoordPlane::SetProcentMarginTop(double pmt) {
 double CoordPlane::GetProcentMarginBottom() {
     double marginBottom = this->procentMarginBottom;
 
-    if(marginBottom == this->default_procentMarginBottom) {
+    if(marginBottom == this->defaultDouble) {
         double correctYe = this->GetYe() * 100;
         double correctToY  = this->GetToY() * 100;
         double correctScale = this->GetScale() * 100;
@@ -899,15 +935,17 @@ void CoordPlane::resetWorkProperties() {
     this->SetYLines(0);
     this->SetFromX(0);
     this->SetFromY(0);
-    this->SetCanvasLeftMargin(this->default_canvasLeftMargin);
-    this->SetCanvasTopMargin(this->default_canvasTopMargin);
+    this->SetCanvasLeftMargin(this->defaultDouble);
+    this->SetCanvasTopMargin(this->defaultDouble);
     this->SetUsedCanvasWidth(0);
     this->SetUsedCanvasHeight(0);
     this->SetToX(0);
     this->SetToY(0);
-    this->SetProcentMarginLeft(this->default_procentMarginLeft);
-    this->SetProcentMarginRight(this->default_procentMarginRight);
-    this->SetProcentMarginTop(this->default_procentMarginTop);
-    this->SetProcentMarginBottom(this->default_procentMarginBottom);
+    this->SetProcentMarginLeft(this->defaultDouble);
+    this->SetProcentMarginRight(this->defaultDouble);
+    this->SetProcentMarginTop(this->defaultDouble);
+    this->SetProcentMarginBottom(this->defaultDouble);
+    this->SetX_PsiP(0.0);
+    this->SetY_PsiP(0.0);
 }
 

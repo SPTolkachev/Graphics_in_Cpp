@@ -9,7 +9,8 @@
 
 class CoordPlane {
 protected:
-    bool debug = false;
+    bool debug = true;
+    double defaultDouble = -10000; // std::numeric_limits<double>::is_iec559;
 
     double X  = 0.0;
     double Xe = 0.0;
@@ -30,7 +31,6 @@ protected:
      */
     Ui::MainWindow *ui;
     QGraphicsScene *scene;
-
     QWidget *canvas;
     int realWidthCanvas = 0;
     double GetUsedCanvasWidth();
@@ -57,13 +57,13 @@ protected:
     double coordLinesY[11] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // горизонтальные
     //    double canvasLinesTypes[2]   = {10.0, 1.0};
     //double canvasLinesMargins[2] = {0.0,  0.0};
-    double default_canvasLeftMargin = std::numeric_limits<double>::is_iec559;
-    double canvasLeftMargin = default_canvasLeftMargin;
+    //double default_canvasLeftMargin = defaultDouble;
+    double canvasLeftMargin = defaultDouble;
     double GetCanvasLeftMargin();
     void   SetCanvasLeftMargin(double canvasLeftMargin);
 
-    double default_canvasTopMargin = std::numeric_limits<double>::is_iec559;
-    double canvasTopMargin = default_canvasTopMargin; // горизонтальный отступ
+    //double default_canvasTopMargin = std::numeric_limits<double>::is_iec559;
+    double canvasTopMargin = defaultDouble; // горизонтальный отступ
     double GetCanvasTopMargin();
     void   SetCanvasTopMargin(double canvasTopMargin);
 
@@ -93,23 +93,23 @@ protected:
     int  GetYLines();
     void SetYLines(int lines);
 
-    double default_procentMarginLeft = std::numeric_limits<double>::is_iec559;
-    double procentMarginLeft = default_procentMarginLeft;
+    //double default_procentMarginLeft = std::numeric_limits<double>::is_iec559;
+    double procentMarginLeft = defaultDouble;
     double GetProcentMarginLeft();
     void   SetProcentMarginLeft(double pml);
 
-    double default_procentMarginRight = std::numeric_limits<double>::is_iec559;
-    double procentMarginRight = default_procentMarginRight;
+    //double default_procentMarginRight = std::numeric_limits<double>::is_iec559;
+    double procentMarginRight = defaultDouble;
     double GetProcentMarginRight();
     void   SetProcentMarginRight(double pmr);
 
-    double default_procentMarginTop = std::numeric_limits<double>::is_iec559;
-    double procentMarginTop = default_procentMarginTop;
+    //double default_procentMarginTop = std::numeric_limits<double>::is_iec559;
+    double procentMarginTop = defaultDouble;
     double GetProcentMarginTop();
     void   SetProcentMarginTop(double pmt);
 
-    double default_procentMarginBottom = std::numeric_limits<double>::is_iec559;
-    double procentMarginBottom = default_procentMarginBottom;
+    //double default_procentMarginBottom = std::numeric_limits<double>::is_iec559;
+    double procentMarginBottom = defaultDouble;
     double GetProcentMarginBottom();
     void   SetProcentMarginBottom(double pmb);
 
@@ -129,8 +129,11 @@ protected:
     void resetWorkProperties();
     void clearScene();
 
+    double X_PsiP = 0.0;
+    double Y_PsiP = 0.0;
+
 public:
-    CoordPlane(Ui::MainWindow *ui,/* QGraphicsView scene , */ /*Ui ui, */double x = -5, double y = 5, double scale = 10/*, int steps = 10*/);
+    CoordPlane(Ui::MainWindow *ui, /*QGraphicsView *scene,*/ double x = -5, double y = 5, double scale = 10);
     double GetX();
     void   SetX(double x);
     //double GetXc(); // X center
@@ -149,6 +152,15 @@ public:
     int    GetSteps();
     void   SetSteps(int steps);
     double GetStep();
+
+    double GetX_PsiP();
+    double SetX_PsiP(double coeff);
+
+    double GetY_PsiP();
+    double SetY_PsiP(double coeff);
+
+    QGraphicsScene *GetScene();
+    void            SetScene();
 
     void   Show();
 };

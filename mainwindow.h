@@ -40,9 +40,10 @@ private slots:
     void on_to_leftDownButton_clicked();
 
 private:
-    Ui::MainWindow *ui;
-    CoordPlane *cplane;
-    Graphics *graphics;
+    Ui::MainWindow    *ui;
+    QGraphicsScene *scene;
+    CoordPlane    *cplane;
+    Graphics    *graphics;
 };
 
 #endif // MAINWINDOW_H

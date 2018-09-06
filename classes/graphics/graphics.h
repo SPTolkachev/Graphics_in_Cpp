@@ -13,19 +13,27 @@ class Graphics {
 protected:
     Ui::MainWindow *ui;
     CoordPlane *cp;
+    QGraphicsScene *scene;
+    QWidget *canvas;
 
-    double initialDouble = std::numeric_limits<double>::is_iec559;
+    double initialDouble = -1000;//std::numeric_limits<double>::is_iec559;
 
-    double arrayXCoords[10];
-    double arrayYCoords[10];
+    static const int    steps = 10;
+    double arrayXCoords[steps]; // gcc запоняет нулями
+    double arrayYCoords[steps];
 
-    double arrayCanvasXCoords[10];
-    double arrayCanvasYCoords[10];
+    double arrayCanvasXCoords[steps];
+    double arrayCanvasYCoords[steps];
 
 
 public:
-    Graphics(Ui::MainWindow *ui, CoordPlane *cp);
-    void Show();
+    Graphics(Ui::MainWindow *ui, CoordPlane *cp/*, QGraphicsView *scene*/);
+    void   toDefaultCoordArrays();
+    void   refillCoordArrays();
+    double calculateYValue(double X);
+    int    GetDots();
+    //void   clearScene();
+    void   Show();
 
 
 
