@@ -14,6 +14,14 @@ protected:
     Ui::MainWindow *ui;
     CoordPlane *cp;
 
+    double initialDouble = std::numeric_limits<double>::is_iec559;
+
+    double arrayXCoords[10];
+    double arrayYCoords[10];
+
+    double arrayCanvasXCoords[10];
+    double arrayCanvasYCoords[10];
+
 
 public:
     Graphics(Ui::MainWindow *ui, CoordPlane *cp);

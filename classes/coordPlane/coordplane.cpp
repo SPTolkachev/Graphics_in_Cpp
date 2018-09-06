@@ -27,7 +27,7 @@ double CoordPlane::GetXe() {
     //std::cout << "Xe* = " << Xe << ";\n";
     if(Xe == 0) {
         Xe = this->GetX() + this->GetScale();
-        std::cout << "Xe = " << Xe << ";\n";
+        if(this->debug) std::cout << "Xe = " << Xe << ";\n";
         this->SetXe(Xe);
     }
     return Xe;
@@ -51,7 +51,7 @@ double CoordPlane::GetYe() {
     //std::cout << "Ye* = " << Ye << ";\n";
     if(Ye == 0) {
         Ye = this->GetY() - this->GetScale();
-        std::cout << "Ye = " << Ye << ";\n";
+        if(this->debug) std::cout << "Ye = " << Ye << ";\n";
         this->SetYe(Ye);
     }
     return Ye;
@@ -82,7 +82,7 @@ int  CoordPlane::GetSteps() {
         stepSize = ceil(this->GetScale() / 10);
         steps = this->GetScale() / stepSize;
         this->maxLines = steps + 1;
-        std::cout << "steps = " << steps << ";\n";
+        if(this->debug) std::cout << "steps = " << steps << ";\n";
         this->SetSteps(steps);
     }
 
@@ -110,14 +110,14 @@ int CoordPlane::GetXLines() {
         //std::cout << "Y: ";
         double currentStep = fromX;
         //lines = 1;
-        std::cout  << "XLines: " << currentStep << ", ";
+        if(this->debug) std::cout  << "XLines: " << currentStep << ", ";
         while(currentStep + stepLength <= toX) {
             lines++;
             currentStep += stepLength;
-            std::cout << currentStep << ", ";
+            if(this->debug) std::cout << currentStep << ", ";
         }
         SetXLines(++lines);
-       std::cout << "; steps = " << lines << ";\n";
+       if(this->debug) std::cout << "; steps = " << lines << ";\n";
     }
     return lines;
 }
@@ -142,15 +142,15 @@ int CoordPlane::GetYLines() {
         double currentStep = fromY;
         //lines = 1;
         //std::cout << "***" << currentStep + stepLength << " <= " << toY << "\n";
-        std::cout << fromY << " -> " << toY << "\n";
-        std::cout  << "YLines: " << currentStep << ", ";
+        if(this->debug) std::cout << fromY << " -> " << toY << "\n";
+        if(this->debug) std::cout  << "YLines: " << currentStep << ", ";
         while(currentStep - stepLength >= toY) {
             lines++;
             currentStep -= stepLength;
-            std::cout << currentStep << ", ";
+            if(this->debug) std::cout << currentStep << ", ";
         }
         this->SetYLines(++lines);
-        std::cout << "; steps = " << lines << ";\n";
+        if(this->debug) std::cout << "; steps = " << lines << ";\n";
 
     }
     return lines;
@@ -170,11 +170,14 @@ double CoordPlane::GetFromX() {
         int remainder = correctX % (stepLength * 100);
         remainder = correctX >= 0 ? -remainder : remainder;
         fromX = (correctX - remainder ) / 100;
-        std::cout << "fromX = (" << correctX << " - (" << correctX << " % (" << stepLength << " * " << 100 << ") ) ) / " << 100 << "    =    ";
-        std::cout <<  "(" << correctX << " - (" << correctX << " % (" << stepLength * 100 << ") ) ) / " << 100 << "    =    ";
-        std::cout <<  "(" << correctX << " - (" << (correctX % (stepLength * 100)) << ") ) / " << 100 << "    =    ";
-        std::cout <<  "(" << (correctX + (correctX % (stepLength * 100))) << ") / " << 100 << "     =     ";
-        std::cout <<  (correctX + (correctX % (stepLength * 100) ) ) / 100 << "\n";
+        if(this->debug) {
+            std::cout << "fromX = (" << correctX << " - (" << correctX << " % (" << stepLength << " * " << 100 << ") ) ) / " << 100 << "    =    ";
+            std::cout <<  "(" << correctX << " - (" << correctX << " % (" << stepLength * 100 << ") ) ) / " << 100 << "    =    ";
+            std::cout <<  "(" << correctX << " - (" << (correctX % (stepLength * 100)) << ") ) / " << 100 << "    =    ";
+            std::cout <<  "(" << (correctX + (correctX % (stepLength * 100))) << ") / " << 100 << "     =     ";
+            std::cout <<  (correctX + (correctX % (stepLength * 100) ) ) / 100 << "\n";
+        }
+
         this->SetFromX(fromX);
     }
     return fromX;
@@ -193,7 +196,7 @@ double CoordPlane::GetToX() {
         double step  = this->GetStep();
         int    lines = this->GetXLines() - 1;
         toX = fromX + (step * lines);
-        std::cout << "toX = " << fromX << " + (" << step << " * " << lines << ") = " << toX << ";\n";
+        if(this->debug) std::cout << "toX = " << fromX << " + (" << step << " * " << lines << ") = " << toX << ";\n";
         this->SetToX(toX);
     }
     return toX;
@@ -213,7 +216,7 @@ double CoordPlane::GetFromY() {
         //std::cout << "\n\ncorrectY = " << correctY << "\n\n";
         int stepLength = this->GetStep();
         fromY = (correctY - abs(correctY % (stepLength * 100) ) ) / 100;
-        std::cout << "fromY = (" << correctY << " - (" << correctY << " % (" << stepLength << " * " << 100 << ") ) ) / " << 100 << " = " << fromY << ";\n";
+        if(this->debug) std::cout << "fromY = (" << correctY << " - (" << correctY << " % (" << stepLength << " * " << 100 << ") ) ) / " << 100 << " = " << fromY << ";\n";
         this->SetFromY(fromY);
     }
     return fromY;
@@ -233,7 +236,7 @@ double CoordPlane::GetToY() {
         double step  = this->GetStep();
         int    lines = this->GetYLines() - 1 ;//(startY == fromY ? 1);
         toY = fromY - (step * lines);
-        std::cout << "toY = " << fromY << " - (" << step << " * " << lines << ") = " << toY << ";\n";
+        if(this->debug) std::cout << "toY = " << fromY << " - (" << step << " * " << lines << ") = " << toY << ";\n";
         this->SetToY(toY);
     }
     return toY;
@@ -255,7 +258,7 @@ double CoordPlane::GetStep() {
     if(step == 0) {
         step = ceil( this->GetScale() / this->GetSteps() );
         this->SetStep(step);
-        std::cout << "step = " << step << ";\n";
+        if(this->debug) std::cout << "step = " << step << ";\n";
     }
     // std::cout << this->GetScale() << " / " << this->GetSteps() << " = " << this->GetScale() / this->GetSteps() << "\n\n";
     //std::cout << "Get: " << this->GetScale() / this->GetSteps() << "\n";
@@ -287,7 +290,7 @@ double CoordPlane::GetStepCanvasWidth() {
 
         double margin = this->GetProcentMarginLeft() + this->GetProcentMarginRight();
         stepCanvasWidth = (this->GetUsedCanvasWidth() * (1 - margin)) / lines; // / this->GetSteps()
-        std::cout << "stepCanvasHeight = " << (this->GetUsedCanvasWidth() * (1 - margin)) << " / " << lines << " = " << stepCanvasWidth << ";\n";
+        if(this->debug) std::cout << "stepCanvasHeight = " << (this->GetUsedCanvasWidth() * (1 - margin)) << " / " << lines << " = " << stepCanvasWidth << ";\n";
         //stepCanvasWidth = this->GetUsedCanvasWidth() / this->GetSteps();
         //std::cout << "stepCanvasWidth = " << stepCanvasWidth << ";\n";
         this->SetStepCanvasWidth( stepCanvasWidth );
@@ -323,7 +326,7 @@ double CoordPlane::GetStepCanvasHeight() {
         */
         double margin = this->GetProcentMarginTop() + this->GetProcentMarginBottom();
         stepCanvasHeight = (this->GetUsedCanvasHeight() * (1 - margin)) / lines; // / this->GetSteps()
-        std::cout << "stepCanvasHeight = " << (this->GetUsedCanvasHeight() * (1 - margin)) << " / " << lines << " = " << stepCanvasHeight << ";\n";
+        if(this->debug) std::cout << "stepCanvasHeight = " << (this->GetUsedCanvasHeight() * (1 - margin)) << " / " << lines << " = " << stepCanvasHeight << ";\n";
         this->SetStepCanvasHeight( stepCanvasHeight );
     }
     return stepCanvasHeight;
@@ -343,7 +346,7 @@ double CoordPlane::GetUsedCanvasWidth() {
     if(realWidthCanvas == 0) {
         realWidthCanvas = this->canvas->width() - 50; // 60
         this->realWidthCanvas = realWidthCanvas;
-        std::cout << "realWidthCanvas = " << realWidthCanvas << "\n";
+        if(this->debug) std::cout << "realWidthCanvas = " << realWidthCanvas << "\n";
     }
     return realWidthCanvas;
 }
@@ -359,7 +362,7 @@ double CoordPlane::GetUsedCanvasHeight() {
     if(realHeightCanvas == 0) {
         realHeightCanvas = this->canvas->height() - 50;
         this->realHeightCanvas = realHeightCanvas;
-        std::cout << "realHeightCanvas = " << realHeightCanvas << "\n";
+        if(this->debug) std::cout << "realHeightCanvas = " << realHeightCanvas << "\n";
     }
     return realHeightCanvas;
 }
@@ -376,7 +379,7 @@ double CoordPlane::GetCanvasLeftMargin() {
 
     if(canvasLeftMargin == this->default_canvasLeftMargin) {
         canvasLeftMargin = this->GetProcentMarginLeft() * this->GetUsedCanvasWidth();
-        std::cout << "canvasLeftMargin = " << this->GetProcentMarginLeft() << " * " << this->GetUsedCanvasWidth() << " = " << canvasLeftMargin << "\n";
+       if(this->debug) std::cout << "canvasLeftMargin = " << this->GetProcentMarginLeft() << " * " << this->GetUsedCanvasWidth() << " = " << canvasLeftMargin << "\n";
         this->SetCanvasLeftMargin(canvasLeftMargin);
     }
     return canvasLeftMargin;
@@ -402,7 +405,7 @@ double CoordPlane::GetCanvasTopMargin() { //GetCanvasHMargin
         std::cout << "(" << margin / scale << ") * " << this->GetUsedCanvasHeight() << " = " << canvasTopMargin << "\n";
         */
         canvasTopMargin = this->GetProcentMarginTop() * this->GetUsedCanvasHeight();
-        std::cout << "canvasTopMargin = " << this->GetProcentMarginTop() << " * " << this->GetUsedCanvasHeight() << " = " << canvasTopMargin << "\n";
+        if(this->debug) std::cout << "canvasTopMargin = " << this->GetProcentMarginTop() << " * " << this->GetUsedCanvasHeight() << " = " << canvasTopMargin << "\n";
         /*
         double Y = this->GetY();
         double fromY = this->GetFromY();
@@ -481,20 +484,20 @@ void CoordPlane::refillCoordLinesArray() {
     // Вертикальные линии
     int x_lines = this->GetXLines();
     double fromX = this->GetFromX();
-    std::cout << "fromX = " << fromX << "; (" << this->GetX() << " -> " << this->GetXe() << ")\n";
-    std::cout << "X: ";
+    if(this->debug) std::cout << "fromX = " << fromX << "; (" << this->GetX() << " -> " << this->GetXe() << ")\n";
+    if(this->debug) std::cout << "X: ";
     for(int i=0; i < this->maxLines; i++) {
         if(i < x_lines) {
             //this->coordLinesX[i] = this->GetX() + (stepLength * i) + this->canvasVMargin;
             this->coordLinesX[i] = fromX + (i * stepLength);
-            std::cout << this->coordLinesX[i] << ", ";
+            if(this->debug) std::cout << this->coordLinesX[i] << ", ";
         }
         else {
             this->coordLinesX[i] = 0;
         }
         //std::cout << this->coordLinesX[i] << ", "; // -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5,
     }
-    std::cout << "\n";
+    if(this->debug) std::cout << "\n";
     //std::cout << "\n" << this->GetXe() << "\n\n\n";
 
     // Горизонтальные линии
@@ -502,7 +505,7 @@ void CoordPlane::refillCoordLinesArray() {
     int y_lines = this->GetYLines();
     // Определяем начальную току шага
     double fromY = this->GetFromY();
-    std::cout << "fromY = " << fromY << "; (" << this->GetY() << " -> " << this->GetYe() << ")\n";
+    if(this->debug) std::cout << "fromY = " << fromY << "; (" << this->GetY() << " -> " << this->GetYe() << ")\n";
     //int allYSteps = ((this->GetY() == fromY) ? (this->GetSteps()+1) : (this->GetSteps() - 1));
     // std::cout << "numsLines (" << this->GetY() << " == " << fromY << ") = " << numsLines << ";\n";
     // std::cout << "Y: ";
@@ -728,7 +731,7 @@ void CoordPlane::Show() {
     ui->graphicsView->setAlignment(Qt::AlignLeft | Qt::AlignBottom);
     ui->graphicsView->setScene(scene);
 
-    std::cout << "-------------------------------------------\n\n\n";
+    if(this->debug) std::cout << "-------------------------------------------\n\n\n";
 
     // Обнуляем ненужные свойства
     this->resetWorkProperties();
@@ -805,10 +808,13 @@ double CoordPlane::GetProcentMarginLeft() {
         double correctFromX = this->GetFromX() * 100;
         double correctScale = this->GetScale() * 100;
         marginLeft = abs(correctX - correctFromX) / correctScale;
-        std::cout << "marginLeft = " << "abs(" << correctX << " - " << correctFromX << ") / " << correctScale << " = ";
-        std::cout << "abs(" << correctX - correctFromX << ") / " << correctScale << " = ";
-        std::cout << abs(correctX - correctFromX) << " / " << correctScale << " = ";
-        std::cout << marginLeft << "\n";
+        if(this->debug) {
+            std::cout << "marginLeft = " << "abs(" << correctX << " - " << correctFromX << ") / " << correctScale << " = ";
+            std::cout << "abs(" << correctX - correctFromX << ") / " << correctScale << " = ";
+            std::cout << abs(correctX - correctFromX) << " / " << correctScale << " = ";
+            std::cout << marginLeft << "\n";
+        }
+
         this->SetProcentMarginLeft(marginLeft);
     }
     return marginLeft;
@@ -830,7 +836,7 @@ double CoordPlane::GetProcentMarginRight() {
         marginRight = abs(correctXe - correctToX) / correctScale;
 
         //marginRight = abs(this->GetXe() - this->GetToX()) / this->GetScale();
-        std::cout << "marginRight = " <<  "(" << correctXe <<" - " << correctToX << ") / " << correctScale << " = " << marginRight << "\n";
+        if(this->debug) std::cout << "marginRight = " <<  "(" << correctXe <<" - " << correctToX << ") / " << correctScale << " = " << marginRight << "\n";
         this->SetProcentMarginRight(marginRight);
     }
     return marginRight;
@@ -848,7 +854,7 @@ double CoordPlane::GetProcentMarginTop() {
 
     if(marginTop == this->default_procentMarginTop) {
         marginTop = (this->GetY() - this->GetFromY()) / this->GetScale();
-        std::cout << "marginTop = " <<  "(" << this->GetY() <<" - " << this->GetFromY() << ") / " << this->GetScale() << " = " << marginTop << "\n";
+        if(this->debug) std::cout << "marginTop = " <<  "(" << this->GetY() <<" - " << this->GetFromY() << ") / " << this->GetScale() << " = " << marginTop << "\n";
     }
     return marginTop;
 }
@@ -866,8 +872,10 @@ double CoordPlane::GetProcentMarginBottom() {
         double correctToY  = this->GetToY() * 100;
         double correctScale = this->GetScale() * 100;
         marginBottom = abs(correctYe - correctToY) / correctScale;
-        std::cout << "marginBottom = " <<  "(" << correctYe <<" - " << correctToY << ") / " << correctScale << " = ";
-        std::cout << "(" << correctYe - correctToY << ") / " << correctScale << " = " << marginBottom << "\n";
+        if(this->debug) {
+            std::cout << "marginBottom = " <<  "(" << correctYe <<" - " << correctToY << ") / " << correctScale << " = ";
+            std::cout << "(" << correctYe - correctToY << ") / " << correctScale << " = " << marginBottom << "\n";
+        }
     }
     return marginBottom;
 }
