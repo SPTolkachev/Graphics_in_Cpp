@@ -2,19 +2,21 @@
 #define GRAPHICS_H
 
 //#include <QMainWindow>
-//#include "ui_mainwindow.h"
+#include "ui_mainwindow.h"
 //#include <QGraphicsTextItem>
 //#include "coordplane.h"
 //#include "mainwindow.h"
+#include "../coordPlane/coordplane.h"
 
 
 class Graphics {
 protected:
-    //CoordPlane *cp;
+    Ui::MainWindow *ui;
+    CoordPlane *cp;
 
 
 public:
-    Graphics(/* CoordPlane *cp */);
+    Graphics(Ui::MainWindow *ui, CoordPlane *cp);
     void Show();
 
 

@@ -3,8 +3,9 @@
 #include <iostream>
 #include <math.h>
 
-Graphics::Graphics(/*CoordPlane *cp*/) {
-    //this->cp = cp;
+Graphics::Graphics(Ui::MainWindow *ui, CoordPlane *cp) {
+    this->ui = ui;
+    this->cp = cp;
 }
 
 

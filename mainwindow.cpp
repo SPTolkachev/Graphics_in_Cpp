@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     this->cplane   = new CoordPlane(ui);
-    this->graphics = new Graphics();
+    this->graphics = new Graphics(ui, this->cplane);
 }
 
 MainWindow::~MainWindow()
