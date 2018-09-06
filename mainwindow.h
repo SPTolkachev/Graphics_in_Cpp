@@ -30,6 +30,14 @@ private slots:
 
     void on_to_leftButton_clicked();
 
+    void on_to_leftUpButton_clicked();
+
+    void on_to_rightUpButton_clicked();
+
+    void on_to_rightBottomButton_clicked();
+
+    void on_to_leftDownButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     CoordPlane *cplane;

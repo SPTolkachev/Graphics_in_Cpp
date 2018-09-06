@@ -66,3 +66,23 @@ void MainWindow::on_to_leftButton_clicked() {
     std::cout << "SetX-(" << newX << ")\n";
     this->ShowGraph(); // Отрисовка
 }
+
+void MainWindow::on_to_leftUpButton_clicked() {
+    this->on_to_leftButton_clicked();
+    this->on_to_upButton_clicked();
+}
+
+void MainWindow::on_to_rightUpButton_clicked() {
+    this->on_to_rightButton_clicked();
+    this->on_to_upButton_clicked();
+}
+
+void MainWindow::on_to_rightBottomButton_clicked() {
+    this->on_to_rightButton_clicked();
+    this->on_to_downButton_clicked();
+}
+
+void MainWindow::on_to_leftDownButton_clicked() {
+    this->on_to_leftButton_clicked();
+    this->on_to_downButton_clicked();
+}

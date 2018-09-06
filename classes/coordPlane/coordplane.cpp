@@ -591,7 +591,7 @@ void CoordPlane::ShowCoordLines() {
 void CoordPlane::ShowCoordLineNums() {
     QPen pen(QColor(175, 175, 175));
 
-    int numsXLines = this->GetYLines();
+    int numsXLines = this->GetXLines();
     double canvasLeftMargin = this->GetCanvasLeftMargin();
     double currX, canvasX;
     //std::cout << "\n\nGetSteps: " << this->GetSteps() << "\n\n\n";
@@ -608,7 +608,7 @@ void CoordPlane::ShowCoordLineNums() {
         scene->addItem(textItem);
     }
 
-    QPen pen1(QColor(225, 0, 0));
+
     //scene->addLine(-10, this->realHeightCanvas-5, -11, this->realHeightCanvas-6, pen1);
 
 
@@ -616,8 +616,10 @@ void CoordPlane::ShowCoordLineNums() {
     double canvasTopMargin = this->GetCanvasTopMargin();
     double currY, canvasY;
 
+    QPen penDebug(QColor(225, 0, 0));
     std::string currYString0 = toHandleNumber( std::to_string(this->GetY()) );
     QGraphicsTextItem *textItem0 = new QGraphicsTextItem( QString::fromUtf8(currYString0.c_str()) );
+    textItem0->setDefaultTextColor( QColor(255, 0, 0) );
     textItem0->setPos(0, 0);
     scene->addItem(textItem0);
 
@@ -635,7 +637,8 @@ void CoordPlane::ShowCoordLineNums() {
 
     std::string currYString = toHandleNumber( std::to_string(this->GetYe()) );
     QGraphicsTextItem *textItem = new QGraphicsTextItem( QString::fromUtf8(currYString.c_str()) );
-    textItem->setPos(0, this->GetUsedCanvasHeight()-20);
+    textItem->setDefaultTextColor( QColor(255, 0, 0) );
+    textItem->setPos(0, this->GetUsedCanvasHeight()-40);
     scene->addItem(textItem);
     /*double currY, canvasY;
     for(int i=0; i < (this->maxLines-(this->canvasHMargin==0 ? 0 : 1)); i++) {
