@@ -26,11 +26,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    classes/coordPlane/coordplane.cpp
+    classes/coordPlane/coordplane.cpp \
+    classes/graphics/graphics.cpp
 
 HEADERS += \
         mainwindow.h \
-    classes/coordPlane/coordplane.h
+    classes/coordPlane/coordplane.h \
+    classes/graphics/graphics.h
 
 FORMS += \
         mainwindow.ui

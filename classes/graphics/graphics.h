@@ -10,12 +10,12 @@
 
 class Graphics {
 protected:
-    CoordPlane *cp;
+    //CoordPlane *cp;
 
 
 public:
-    Graphics(CoordPlane *cp);
-    Show();
+    Graphics(/* CoordPlane *cp */);
+    void Show();
 
 
 

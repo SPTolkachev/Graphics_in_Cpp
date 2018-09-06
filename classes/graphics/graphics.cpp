@@ -3,11 +3,11 @@
 #include <iostream>
 #include <math.h>
 
-Graphics::Graphics(CoordPlane *cp) {
-    this->cp = cp;
+Graphics::Graphics(/*CoordPlane *cp*/) {
+    //this->cp = cp;
 }
 
 
-Graphics::Show() {
+void Graphics::Show() {
 
 }

@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "classes/coordPlane/coordplane.h"
+#include "classes/graphics/graphics.h"
 #include <iostream>
 
 
@@ -9,7 +10,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    this->cplane = new CoordPlane(ui);
+    this->cplane   = new CoordPlane(ui);
+    this->graphics = new Graphics();
 }
 
 MainWindow::~MainWindow()

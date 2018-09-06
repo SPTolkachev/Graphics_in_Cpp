@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "classes/coordPlane/coordplane.h"
+#include "classes/graphics/graphics.h"
 
 namespace Ui {
 class MainWindow;
@@ -41,6 +42,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     CoordPlane *cplane;
+    Graphics *graphics;
 };
 
 #endif // MAINWINDOW_H
