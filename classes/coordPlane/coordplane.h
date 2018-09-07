@@ -9,7 +9,7 @@
 
 class CoordPlane {
 protected:
-    bool debug = true;
+    bool debug = false;
     double defaultDouble = -10000; // std::numeric_limits<double>::is_iec559;
 
     double X  = 0.0;
@@ -133,7 +133,7 @@ protected:
     double Y_PsiP = 0.0;
 
 public:
-    CoordPlane(Ui::MainWindow *ui, /*QGraphicsView *scene,*/ double x = -5, double y = 5, double scale = 10);
+    CoordPlane(Ui::MainWindow *ui, QGraphicsScene *scene, double x = -5, double y = 5, double scale = 10);
     double GetX();
     void   SetX(double x);
     //double GetXc(); // X center
@@ -159,8 +159,8 @@ public:
     double GetY_PsiP();
     double SetY_PsiP(double coeff);
 
-    QGraphicsScene *GetScene();
-    void            SetScene();
+    //QGraphicsScene *GetScene();
+    //void            SetScene();
 
     void   Show();
 };

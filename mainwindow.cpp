@@ -11,8 +11,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     this->scene    = new QGraphicsScene(ui->graphicsView);
-    this->cplane   = new CoordPlane(this->ui/*, this->scene*/);
-    this->graphics = new Graphics(this->ui, this->cplane/*, this->scene*/);
+    this->cplane   = new CoordPlane(this->ui, this->scene);
+    this->graphics = new Graphics(this->ui, this->cplane, this->scene);
 }
 
 MainWindow::~MainWindow()
@@ -21,6 +21,7 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::ShowGraph() {
+    this->scene->clear();
     this->cplane->Show();
     this->graphics->Show();
 

@@ -2,12 +2,12 @@
 #include <iostream>
 #include <math.h>
 
-CoordPlane::CoordPlane(Ui::MainWindow *ui, /*QGraphicsView *scene,*/ double x, double y, double scale) {
+CoordPlane::CoordPlane(Ui::MainWindow *ui, QGraphicsScene *scene, double x, double y, double scale) {
     this->SetX(x);
     this->SetY(y);
     this->SetScale(scale);
     this->ui = ui;
-    this->scene = new QGraphicsScene(ui->graphicsView);
+    this->scene = scene;//new QGraphicsScene(ui->graphicsView);
     //this->SetSteps(steps);
 
 
@@ -740,9 +740,9 @@ std::string CoordPlane::toHandleNumber(std::string str) {
  * Очистка canvas
  */
 void CoordPlane::clearScene() {
-    this->scene = new QGraphicsScene(ui->graphicsView);
+    this->scene->clear();
 }
-
+/*
 QGraphicsScene *CoordPlane::GetScene() {
     return this->scene;
 }
@@ -750,6 +750,7 @@ QGraphicsScene *CoordPlane::GetScene() {
 void CoordPlane::SetScene() {
     ui->graphicsView->setScene(this->scene);
 }
+*/
 
 /**
  * @brief CoordPlane::Show
@@ -767,7 +768,7 @@ void CoordPlane::Show() {
     this->ShowCoordLineNums(); // Выводим значения линий
 
     ui->graphicsView->setAlignment(Qt::AlignLeft | Qt::AlignBottom);
-    ui->graphicsView->setScene(scene);
+    //ui->graphicsView->setScene(scene);
 
 
 

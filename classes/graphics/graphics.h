@@ -11,6 +11,8 @@
 
 class Graphics {
 protected:
+    bool debug = false;
+
     Ui::MainWindow *ui;
     CoordPlane *cp;
     QGraphicsScene *scene;
@@ -18,22 +20,24 @@ protected:
 
     double initialDouble = -1000;//std::numeric_limits<double>::is_iec559;
 
-    static const int    steps = 10;
-    double arrayXCoords[steps]; // gcc запоняет нулями
-    double arrayYCoords[steps];
+    static const int dots = 101;
+    double *arrayXCoords  = new double[dots]; // gcc запоняет нулями
+    double *arrayYCoords  = new double[dots];
 
-    double arrayCanvasXCoords[steps];
-    double arrayCanvasYCoords[steps];
+    double *arrayCanvasXCoords = new double[dots];
+    double *arrayCanvasYCoords = new double[dots];
 
 
 public:
-    Graphics(Ui::MainWindow *ui, CoordPlane *cp/*, QGraphicsView *scene*/);
-    void   toDefaultCoordArrays();
-    void   refillCoordArrays();
-    double calculateYValue(double X);
-    int    GetDots();
-    //void   clearScene();
-    void   Show();
+    Graphics(Ui::MainWindow *ui, CoordPlane *cp, QGraphicsScene *scene);
+    void    toDefaultCoordArrays();
+    void    refillCoordArrays();
+    double  calculateYValue(double X);
+    int     GetDots();
+    void    ShowLines();
+    double *CorrectDot(double X0, double Y0, double X1, double Y1);
+    //void  clearScene();
+    void    Show();
 
 
 
