@@ -72,6 +72,9 @@ void Graphics::ShowLines() {
     double Ye = this->cp->GetYe();
     QPen pen(QColor(0, 225, 0));
 
+    double X_PsiP = this->cp->GetX_PsiP();
+    double Y_PsiP = this->cp->GetY_PsiP();
+
     for(int i=0; i < dots; i++) {
         if(i) {
             double x0 = this->arrayXCoords[i-1];
@@ -114,10 +117,11 @@ void Graphics::ShowLines() {
             //*
             case 1110: // Y1 не попал в диапазон
                 //* if(this->debug) */ std::cout << "Пограничная ситуация this->scene->addLine("<<cnv_x0<<", "<<cnv_y0<<",  "<<cnv_x1<<", "<<cnv_y1<<",  pen);\n";
-                std::cout << "Пограничная ситуация this->scene->addLine("<<x0<<", "<<y0<<",  "<<x1<<", "<<y1<<",  pen);\n";
-                correctDot = this->CorrectDot(x0, y0, x1, y1);
-                cnv_x1 = correctDot[2];
-                cnv_y1 = correctDot[3];
+                std::cout << "Пограничная ситуация (Y1) this->scene->addLine("<<x0<<", "<<y0<<",  "<<x1<<", "<<y1<<",  pen);\n";
+                correctDot = this->CorrectY1(x0, y0, x1, y1);
+                cnv_x1 = (correctDot[2] - X) / X_PsiP;
+                cnv_y1 = (-correctDot[3] + Y) / Y_PsiP;
+                this->scene->addLine(cnv_x0, cnv_y0,  cnv_x1, cnv_y1,  pen);
                 break;
             case 1101: // X1 не попал в диапазон
                 //* if(this->debug) */ std::cout << "Пограничная ситуация this->scene->addLine("<<cnv_x0<<", "<<cnv_y0<<",  "<<cnv_x1<<", "<<cnv_y1<<",  pen);\n";
@@ -125,10 +129,12 @@ void Graphics::ShowLines() {
                 break;
             case 1011: // Y0 не попал в диапазон
                 //* if(this->debug) */ std::cout << "Пограничная ситуация this->scene->addLine("<<cnv_x0<<", "<<cnv_y0<<",  "<<cnv_x1<<", "<<cnv_y1<<",  pen);\n";
-                std::cout << "Пограничная ситуация this->scene->addLine("<<x0<<", "<<y0<<",  "<<x1<<", "<<y1<<",  pen);\n";
-                correctDot = this->CorrectDot(x0, y0, x1, y1);
-                cnv_x0 = correctDot[0];
-                cnv_y0 = correctDot[1];
+                std::cout << "Пограничная ситуация (Y0) this->scene->addLine("<<x0<<", "<<y0<<",  "<<x1<<", "<<y1<<",  pen);\n";
+                correctDot = this->CorrectY0(x0, y0, x1, y1);
+                cnv_x0 = (correctDot[0] - X)  / X_PsiP;
+                cnv_y0 = (-correctDot[1] + Y)  / Y_PsiP;
+                this->scene->addLine(cnv_x0, cnv_y0,  cnv_x1, cnv_y1,  pen);
+                //std::cout << ;
                 break;
             case 111: // X0 не попал в диапазон
                 //* if(this->debug) */ std::cout << "Пограничная ситуация this->scene->addLine("<<cnv_x0<<", "<<cnv_y0<<",  "<<cnv_x1<<", "<<cnv_y1<<",  pen);\n";
@@ -153,8 +159,118 @@ void Graphics::ShowLines() {
 
 
 double Graphics::calculateYValue(double X) {
-    return (X * X);
+    return -(X * X);
 }
+
+
+
+double *Graphics::CorrectY0(double X0, double Y0, double X1, double Y1) {
+    double  cpY  = this->cp->GetY();
+    double  cpYe = this->cp->GetYe();
+    double *newCoord = new double[4];
+
+    double differenceY = Y0 - Y1;
+    double differenceX = X1 - X0;
+    int    differenceXDots  = 20;
+
+    double deviation  = differenceY / differenceXDots; // рассчитываем допустимое отклонение от края координатной плоскости
+    deviation = deviation * (deviation > 0 ? 1 : -1);
+    double cpY_dev  = cpY - deviation;   // Допустимая точка отклонения по верхнему краю
+    double cpYe_dev = cpYe + deviation;  // Допустимая точка отклонения по нижнему  краю
+
+    //int    differenceXSteps = differenceXDots - 1;
+    double differenceXStep  = differenceX / differenceXDots;
+
+    double currX0 = 0;
+    double currY0 = 0;
+    bool successfullyCorrect = false;
+
+    for(int i=0; i <= differenceXDots; i++) {
+        currX0 = X0 + i * differenceXStep;
+        // currX1 = X1 - i * differenceXStep;
+        currY0 = calculateYValue(currX0);
+
+        std::cout << cpYe<<" <= "<<currY0<<" && "<<currY0<<" <= "<<cpYe_dev<<" || ";
+        std::cout << cpY<<" >= "<<currY0<<" && "<<currY0<<" >= "<<cpY_dev<<"\n";
+
+        if(
+            (cpYe <= currY0 && currY0 <= cpYe_dev) || // по нижнему пределу
+            (cpY  >= currY0 && currY0 >= cpY_dev)     // по верхнему пределу
+          ) {
+            successfullyCorrect = true;
+            break;
+        }
+    }
+
+    if(successfullyCorrect) {
+        X0 = currX0;
+        Y0 = currY0;
+    }
+
+    std::cout << "на { "<<X0<<", "<<Y0<<", "<<X1<<",  "<<Y1<<"};\n";
+    newCoord[0] = X0;
+    newCoord[1] = Y0;
+    newCoord[2] = X1;
+    newCoord[3] = Y1;
+
+    //{ X0, Y0, X1, Y1 };
+
+    return newCoord;
+}
+
+double *Graphics::CorrectY1(double X0, double Y0, double X1, double Y1) {
+    double cpY  = this->cp->GetY();
+    double cpYe = this->cp->GetYe();
+    double* newCoord = new double[4];
+
+    double differenceY = Y0 - Y1;
+    double differenceX = X1 - X0;
+    int    differenceXDots  = 10;
+    double deviation  = differenceY / differenceXDots; // рассчитываем допустимое отклонение от края координатной плоскости
+    deviation = deviation * (deviation > 0 ? 1 : -1);
+    double cpYe_dev = cpYe + deviation; // Допустимая точка отклонения по верхнему краю
+    double cpY_dev  = cpY  - deviation; // Допустимая точка отклонения по нижнему  краю
+
+    //int    differenceXSteps = differenceXDots - 1;
+    double differenceXStep  = differenceX / differenceXDots;
+
+    double currX1 = 0;
+    double currY1 = 0;
+    //double delta  = 0;
+    //double d_X    = X1;
+    //double d_Y    = calculateYValue(currX1);
+    bool successfullyCorrect = false;
+    for(int i=0; i <= differenceXDots; i++) {
+        currX1 = X1 - i * differenceXStep;
+        currY1 = calculateYValue(currX1);
+        std::cout << cpYe<<" <= "<<currY1<<" && "<<currY1<<" <= "<<cpYe_dev<<" || ";
+        std::cout << cpY<<" >= "<<currY1<<" && "<<currY1<<" >= "<<cpY_dev<<"\n";
+        if(
+            (cpYe <= currY1 && currY1 <= cpYe_dev) || // по нижнему пределу
+            (cpY  >= currY1 && currY1 >= cpY_dev)     // по верхнему пределу
+          ) {
+            successfullyCorrect = true;
+            break;
+        }
+    }
+
+    if(successfullyCorrect) {
+        X1 = currX1;
+        Y1 = currY1;
+    }
+
+    std::cout << "на { "<<X0<<", "<<Y0<<", "<<X1<<",  "<<Y1<<"};\n";
+    newCoord[0] = X0;
+    newCoord[1] = Y0;
+    newCoord[2] = X1;
+    newCoord[3] = Y1;
+
+    //{ X0, Y0, X1, Y1 };
+
+    return newCoord;
+}
+
+
 
 double *Graphics::CorrectDot(double X0, double Y0, double X1, double Y1) {
     double cpX  = this->cp->GetX();
@@ -183,7 +299,8 @@ double *Graphics::CorrectDot(double X0, double Y0, double X1, double Y1) {
     bool by_y  = !(condition_y0 && condition_y1);
 
     double deviation  = 0;
-    double difference = 0;
+    double differenceX = 0;
+    double differenceY = 0;
     if( !correctDot ) {
         std::cout << "!correctDot ";
         if(by_x && by_y) { // by both dots
@@ -191,6 +308,7 @@ double *Graphics::CorrectDot(double X0, double Y0, double X1, double Y1) {
         }
         else { // only one dot
             std::cout << " :: only one dot :: ";
+            /*
             if(by_x) {
                 std::cout << "by_x ****\n";
                 difference = X1 - X0;
@@ -211,29 +329,60 @@ double *Graphics::CorrectDot(double X0, double Y0, double X1, double Y1) {
                 X0 = new_X0;
                 Y0 = calculateYValue(X0);
             }
+            */
             if(by_y) {
                 std::cout << "by_y ****\n";
 
                 // Надо заходить через X!!!!!!!!!!!!
-                difference = Y0 - Y1;
+                /*
+                differenceX = X1 - X0; // длина проблемного участка
+                differenceY = Y0 - Y1;
                 //std::cout << "difference = "<<Y0<<" - "<<Y1<<";\n";
-                deviation  = difference / 10;
-                double cpY_dev = cpY - deviation;
+                deviation  = differenceY / 10; // рассчитываем допустимое отклонение от края координатной плоскости
+                double cpY_dev = cpY - deviation; // Допустимая точка отклонения
                 std::cout << "cpY_dev = "<<cpY<<" - "<<deviation<<";\n";
-                difference /= 2;
-                double new_Y0 = cpY - difference;
+                differenceX /= 2;
+                double new_Y0;
                 int limit = 10;
                 do {
+                    new_Y0 = calculateYValue(cpX + differenceX);
                     if( new_Y0 < cpY ) {
-                        difference *= 1.5;
+                        differenceX *= 1.5;
                     }
                     else {
-                        difference *= 0.5;
+                        differenceX *= 0.5;
                     }
                     limit--;
-                } while( !(cpY <= new_Y0 && new_Y0 >= cpY_dev) && (limit > 0) );
+                    std::cout << cpY<<" <= "<<new_Y0<<" && "<<new_Y0<<" >= "<<cpY_dev<<" \n";
+                } while( !(cpY >= new_Y0 && new_Y0 <= cpY_dev) && (limit > 0) );
                 X0 = new_Y0;
                 Y0 = calculateYValue(X0);
+                */
+                differenceY = Y0 - Y1;
+                differenceX = X1 - X0;
+                int    differenceXDots  = 10;
+                deviation  = differenceY / differenceXDots; // рассчитываем допустимое отклонение от края координатной плоскости
+                double cpY_dev = cpY - deviation; // Допустимая точка отклонения
+
+                int    differenceXSteps = differenceXDots - 1;
+                double differenceXStep  = differenceX / differenceXSteps;
+
+                double currX0 = 0;
+                double currY0 = 0;
+                bool succssesfullDot = false;
+                for(int i=0; i < differenceXSteps; i++) {
+                    currX0 = X0 + i * differenceXStep;
+                    currY0 = calculateYValue(currX0);
+                    if(cpY >= currY0 && currY0 <= cpY_dev) {
+                        succssesfullDot = true;
+                        break;
+                    }
+                }
+
+                if(succssesfullDot) {
+                    X0 = currX0;
+                    Y0 = currY0;
+                }
             }
         }
     }

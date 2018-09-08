@@ -35,7 +35,9 @@ public:
     double  calculateYValue(double X);
     int     GetDots();
     void    ShowLines();
-    double *CorrectDot(double X0, double Y0, double X1, double Y1);
+    /* Del */ double *CorrectDot(double X0, double Y0, double X1, double Y1);
+    double *CorrectY0(double X0, double Y0, double X1, double Y1);
+    double *CorrectY1(double X0, double Y0, double X1, double Y1);
     //void  clearScene();
     void    Show();
 
