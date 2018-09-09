@@ -55,7 +55,7 @@ public:
     void SetDebug(bool debug);
 
     std::string GetGraphicString(int num);
-    void        SetGraphicString(int num, std::string exp);
+    void        SetGraphicString(int num, QString exp);
     QColor     *GetGraphicColor(int num);
     void        SetGraphicColor(int num, int color);
 

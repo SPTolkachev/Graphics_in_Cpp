@@ -108,3 +108,27 @@ void MainWindow::on_DebugFlag_stateChanged(int arg1) {
     this->cplane->SetDebug(b);
     this->graphics->SetDebug(b);
 }
+
+void MainWindow::on_gFunc0_textChanged(const QString &arg1) {
+    this->graphics->SetGraphicString(0, arg1);
+}
+
+void MainWindow::on_color_graph0_currentIndexChanged(int index) {
+    this->graphics->SetGraphicColor(0, index);
+}
+
+void MainWindow::on_gFunc1_textChanged(const QString &arg1) {
+    this->graphics->SetGraphicString(1, arg1);
+}
+
+void MainWindow::on_color_graph1_currentIndexChanged(int index){
+    this->graphics->SetGraphicColor(1, index);
+}
+
+void MainWindow::on_gFunc2_textChanged(const QString &arg1) {
+    this->graphics->SetGraphicString(2, arg1);
+}
+
+void MainWindow::on_color_graph2_currentIndexChanged(int index) {
+    this->graphics->SetGraphicColor(2, index);
+}

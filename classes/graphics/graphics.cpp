@@ -14,13 +14,19 @@ Graphics::Graphics(Ui::MainWindow *ui, CoordPlane *cp, QGraphicsScene *scene) {
     this->toDefaultCoordArrays();
 
 
-    this->arrayGraphics[0] = (ui->gFunc0->text()).toUtf8().constData();
-    this->arrayGraphics[1] = (ui->gFunc1->text()).toUtf8().constData();
-    this->arrayGraphics[2] = (ui->gFunc2->text()).toUtf8().constData();
+    //this->arrayGraphics[0] = (ui->gFunc0->text()).toUtf8().constData();
+    this->SetGraphicString( 0, ui->gFunc0->text() );
+    //this->arrayGraphics[1] = (ui->gFunc1->text()).toUtf8().constData();
+    this->SetGraphicString( 1, ui->gFunc1->text() );
+    //this->arrayGraphics[2] = (ui->gFunc2->text()).toUtf8().constData();
+    this->SetGraphicString( 2, ui->gFunc2->text() );
 
-    this->arrayGraphicsColors[0] = ui->color_graph0->currentIndex();
-    this->arrayGraphicsColors[1] = ui->color_graph1->currentIndex();
-    this->arrayGraphicsColors[2] = ui->color_graph2->currentIndex();
+    //this->arrayGraphicsColors[0] = ui->color_graph0->currentIndex();
+    this->SetGraphicColor( 0, ui->color_graph0->currentIndex() );
+    //this->arrayGraphicsColors[1] = ui->color_graph1->currentIndex();
+    this->SetGraphicColor( 1, ui->color_graph1->currentIndex() );
+    //this->arrayGraphicsColors[2] = ui->color_graph2->currentIndex();
+    this->SetGraphicColor( 2, ui->color_graph2->currentIndex() );
     //this->Show();
 }
 
@@ -43,9 +49,9 @@ std::string Graphics::GetGraphicString(int num) {
     return result;
 }
 
-void Graphics::SetGraphicString(int num, std::string exp) {
+void Graphics::SetGraphicString(int num, QString exp) {
     if( num >= 0 && num <= this->graphics_numbers )
-        this->arrayGraphics[num] = exp;
+        this->arrayGraphics[num] = exp.toUtf8().constData();
 }
 
 
