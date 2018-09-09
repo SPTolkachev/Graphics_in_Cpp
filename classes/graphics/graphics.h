@@ -49,6 +49,7 @@ protected:
     void    RefillCoordArrays();
     double *CorrectY0(std::string exp, double X0, double Y0, double X1, double Y1);
     double *CorrectY1(std::string exp, double X0, double Y0, double X1, double Y1);
+    ~Graphics();
 
 
 

@@ -3,6 +3,13 @@
 #include <iostream>
 #include <math.h>
 
+/**
+ * @brief Graphics::Graphics
+ * Конструктор класса отвечающего за отображение графиков математических функций
+ * @param ui    -- ui (user interface) объект Qt
+ * @param cp    -- класс отвечающий за отображение координатной плоскости
+ * @param scene -- сцена для canvas
+ */
 Graphics::Graphics(Ui::MainWindow *ui, CoordPlane *cp, QGraphicsScene *scene) {
     this->ui = ui;
     this->cp = cp;
@@ -11,31 +18,55 @@ Graphics::Graphics(Ui::MainWindow *ui, CoordPlane *cp, QGraphicsScene *scene) {
     this->debug  = this->ui->DebugFlag->isChecked();
     this->ToDefaultCoordArrays();
 
-
     this->SetGraphicString( 0, ui->gFunc0->text() );
-    if(1) {
-        this->SetGraphicString( 1, ui->gFunc1->text() );
-        this->SetGraphicString( 2, ui->gFunc2->text() );
-    }
+    this->SetGraphicString( 1, ui->gFunc1->text() );
+    this->SetGraphicString( 2, ui->gFunc2->text() );
 
     this->SetGraphicColor( 0, ui->color_graph0->currentIndex() );
-    if(2) {
-        this->SetGraphicColor( 1, ui->color_graph1->currentIndex() );
-        this->SetGraphicColor( 2, ui->color_graph2->currentIndex() );
-    }
+    this->SetGraphicColor( 1, ui->color_graph1->currentIndex() );
+    this->SetGraphicColor( 2, ui->color_graph2->currentIndex() );
 }
 
+
+
+/**
+ * @brief Graphics::~Graphics
+ * Деструктор класса
+ */
+Graphics::~Graphics() {
+
+}
+
+
+
+/**
+ * @brief Graphics::GetDebug
+ * Возвращает значение флага отладки
+ * @return -- значение флага отладки
+ */
 bool Graphics::GetDebug() {
     return this->debug;
 }
 
+
+
+/**
+ * @brief Graphics::SetDebug
+ * Устанавливает/спускает флаг отладки
+ * @param debug -- значение флага
+ */
 void Graphics::SetDebug(bool debug) {
     this->debug = debug;
 }
 
 
 
-
+/**
+ * @brief Graphics::GetGraphicString
+ * Возвращает строку с математическим выражением для построения графика
+ * @param num -- номер поля с математическим выражением
+ * @return std::string -- математическое выражение
+ */
 std::string Graphics::GetGraphicString(int num) {
     std::string result = "";
     if( num >= 0 && num <= this->graphics_numbers )
@@ -44,12 +75,27 @@ std::string Graphics::GetGraphicString(int num) {
     return result;
 }
 
+
+
+/**
+ * @brief Graphics::SetGraphicString
+ * Устанавливает найденное значение строки с математическим выражением для построения графика
+ * @param num -- номер поля с математическим выражением
+ * @param exp -- математическое выражение
+ */
 void Graphics::SetGraphicString(int num, QString exp) {
     if( num >= 0 && num <= this->graphics_numbers )
         this->arrayGraphics[num] = exp.toUtf8().constData();
 }
 
 
+
+/**
+ * @brief Graphics::GetGraphicColor
+ * Возвращает цвет линий для построения графика
+ * @param num -- номер поля с математическим выражением
+ * @return QColor -- цвет линий
+ */
 QColor *Graphics::GetGraphicColor(int num) {
     QColor * color;// = new QColor(0,0,0);
     if( num >= 0 && num <= this->graphics_numbers )
@@ -59,6 +105,14 @@ QColor *Graphics::GetGraphicColor(int num) {
     return color;
 }
 
+
+
+/**
+ * @brief Graphics::SetGraphicColor
+ * Устанавливает цвет линий для построения графика
+ * @param num -- номер поля с математическим выражением
+ * @param color -- номер цвета, доступного в наборе цветов (this->arrayGraphicsColors)
+ */
 void Graphics::SetGraphicColor(int num, int color) {
     if( num >= 0 && num <= this->graphics_numbers )
         this->arrayGraphicsColors[num] = color;
@@ -66,9 +120,13 @@ void Graphics::SetGraphicColor(int num, int color) {
 
 
 
-
-
-
+/**
+ * @brief Graphics::CalculateYValue
+ * Возвращает результат рассчета математического выражения
+ * @param exp -- математическое выражение
+ * @param X   -- значение 'X'
+ * @return double -- результат рассчета математического выражения
+ */
 double Graphics::CalculateYValue(std::string exp, double X) {
     double result = 0;
 
@@ -87,8 +145,10 @@ double Graphics::CalculateYValue(std::string exp, double X) {
 
 
 
-
-
+/**
+ * @brief Graphics::ToDefaultCoordArrays
+ * Обнуляет значения массивов значений координат
+ */
 void Graphics::ToDefaultCoordArrays() {
     int dots = this->GetDots();
     for(int i=0; i < this->graphics_numbers; i++) {
@@ -102,11 +162,24 @@ void Graphics::ToDefaultCoordArrays() {
 }
 
 
+
+/**
+ * @brief Graphics::GetDots
+ * Возвращает кол-во точек, через которые будут проходить линии
+ * @return int -- кол-во точек, для построения графика
+ */
 int Graphics::GetDots() {
     return this->dots;
 }
 
 
+
+/**
+ * @brief Graphics::CheckExpression
+ * Проверяет выражение на корректность
+ * @param exp -- проверяемое выражение
+ * @return bool -- результат проверки выражения
+ */
 bool Graphics::CheckExpression(std::string exp) {
     if( exp.length() == 0 )
         return false;
@@ -135,6 +208,11 @@ bool Graphics::CheckExpression(std::string exp) {
 }
 
 
+
+/**
+ * @brief Graphics::RefillCoordArrays
+ * Заполняет значения массивов значений координат
+ */
 void Graphics::RefillCoordArrays() {
     double X  = this->cp->GetX();
     double Y  = this->cp->GetY();
@@ -218,6 +296,10 @@ void Graphics::RefillCoordArrays() {
 
 
 
+/**
+ * @brief Graphics::ShowLines
+ * Отрисовывает линии графиков по двум рассчитанным точкам
+ */
 void Graphics::ShowLines() {
     int dots  = this->GetDots();
     double X  = this->cp->GetX();
@@ -262,7 +344,16 @@ void Graphics::ShowLines() {
 
 
 
-
+/**
+ * @brief Graphics::CorrectY0
+ * Корректировка значения 'Y' первой точки, выходящего за пределы отображаемой части координатной прямой
+ * @param exp -- математическое выражение
+ * @param X0  -- значение X первой точки
+ * @param Y0  -- значение Y первой точки
+ * @param X1  -- значение X второй точки
+ * @param Y1  -- значение Y второй точки
+ * @return double -- откорректированное значение
+ */
 double *Graphics::CorrectY0(std::string exp, double X0, double Y0, double X1, double Y1) {
     if(this->debug) std::cout << "Переопределение координат с { "<<X0<<", "<<Y0<<", "<<X1<<",  "<<Y1<<"} ";
     double  cpY  = this->cp->GetY();
@@ -311,6 +402,18 @@ double *Graphics::CorrectY0(std::string exp, double X0, double Y0, double X1, do
     return newCoord;
 }
 
+
+
+/**
+ * @brief Graphics::CorrectY1
+ * Корректировка значения 'Y' второй точки, выходящего за пределы отображаемой части координатной прямой
+ * @param exp -- математическое выражение
+ * @param X0  -- значение X первой точки
+ * @param Y0  -- значение Y первой точки
+ * @param X1  -- значение X второй точки
+ * @param Y1  -- значение Y второй точки
+ * @return double -- откорректированное значение
+ */
 double *Graphics::CorrectY1(std::string exp, double X0, double Y0, double X1, double Y1) {
     if(this->debug) std::cout << "Переопределение координат с { "<<X0<<", "<<Y0<<", "<<X1<<",  "<<Y1<<"} ";
     double cpY  = this->cp->GetY();
@@ -360,6 +463,11 @@ double *Graphics::CorrectY1(std::string exp, double X0, double Y0, double X1, do
 }
 
 
+
+/**
+ * @brief Graphics::Show
+ * Функция выводящая готовую сцену на canvas
+ */
 void Graphics::Show() {
     this->RefillCoordArrays();
     this->ShowLines();
