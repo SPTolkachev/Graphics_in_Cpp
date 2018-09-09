@@ -293,6 +293,104 @@
      </widget>
     </widget>
    </widget>
+   <widget class="QLineEdit" name="gFunc1">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>30</y>
+      <width>171</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="maxLength">
+     <number>500</number>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="color_graph1">
+    <property name="geometry">
+     <rect>
+      <x>550</x>
+      <y>30</y>
+      <width>91</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="currentText">
+     <string>black</string>
+    </property>
+    <item>
+     <property name="text">
+      <string>black</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>images/colors_icons/black.png</normaloff>images/colors_icons/black.png</iconset>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>blue</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>images/colors_icons/blue.png</normaloff>images/colors_icons/blue.png</iconset>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>fuchsia</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>images/colors_icons/fuchsia.png</normaloff>images/colors_icons/fuchsia.png</iconset>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>gold</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>images/colors_icons/gold.png</normaloff>images/colors_icons/gold.png</iconset>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>green</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>images/colors_icons/green.png</normaloff>images/colors_icons/green.png</iconset>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>greenyellow</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>images/colors_icons/greenyellow.png</normaloff>images/colors_icons/greenyellow.png</iconset>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>grey</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>images/colors_icons/grey.png</normaloff>images/colors_icons/grey.png</iconset>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>red</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>images/colors_icons/red.png</normaloff>images/colors_icons/red.png</iconset>
+     </property>
+    </item>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
