@@ -34,7 +34,16 @@ Graphics::Graphics(Ui::MainWindow *ui, CoordPlane *cp, QGraphicsScene *scene) {
  * Деструктор класса
  */
 Graphics::~Graphics() {
+    //for (int i = 0; i < this->graphics_numbers; i++) {
+        delete [] arrayXCoords;//[i];
+        delete [] arrayYCoords;//[i];
+        delete [] arrayCanvasXCoords;//[i];
+        delete [] arrayCanvasYCoords;//[i];
+    //}
 
+    for (int i = 0; i < this->usedColorsNums; i++) {
+        delete usedColors[i];
+    }
 }
 
 

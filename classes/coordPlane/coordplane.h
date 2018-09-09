@@ -87,7 +87,7 @@ protected:
     int    GetYLines();
     void   SetYLines(int lines);
 
-    void   refillCoordLinesArray();
+    void   RefillCoordLinesArray();
     void   ShowCoordLines();
     void   ShowCoordLineNums();
 
@@ -98,10 +98,10 @@ protected:
     double GetStepCanvasHeight();
     void   SetStepCanvasHeight(double height);
 
-    std::string toHandleNumber(std::string str);
+    std::string ToHandleNumber(std::string str);
 
-    void   resetWorkProperties();
-    void   clearScene();
+    void   ResetWorkProperties();
+    void   ClearScene();
 
     double X_PsiP = 0.0;
     double Y_PsiP = 0.0;

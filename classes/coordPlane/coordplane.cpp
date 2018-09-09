@@ -854,10 +854,10 @@ void CoordPlane::SetCanvasTopMargin(double canvasTopMargin) {
 
 
 /**
- * @brief refillCoordLinesArray
+ * @brief RefillCoordLinesArray
  * Обновление значений линий координатной плоскости
  */
-void CoordPlane::refillCoordLinesArray() {
+void CoordPlane::RefillCoordLinesArray() {
     int stepLength = this->GetStep();
 
     // Вертикальные линии
@@ -939,7 +939,7 @@ void CoordPlane::ShowCoordLineNums() {
     for(int i=0; i < numsXLines; i++) {
         canvasX = ( i * this->GetStepCanvasWidth() ) + canvasLeftMargin; // Вывод координат canvas
         currX = coordLinesX[i]; // Вывод реальных координат
-        std::string currXString = toHandleNumber( std::to_string(currX) );
+        std::string currXString = this->ToHandleNumber( std::to_string(currX) );
         QGraphicsTextItem *textItem = new QGraphicsTextItem(QString::fromUtf8(currXString.c_str()));
         textItem->setPos(canvasX-10, realHeightCanvas+35);
         textItem->setRotation(-90);
@@ -952,7 +952,7 @@ void CoordPlane::ShowCoordLineNums() {
     for(int i=0; i < numsYLines; i++) {
         canvasY = ( i * this->GetStepCanvasHeight() ) + canvasTopMargin; // Вывод координат canvas
         currY = coordLinesY[i]; // Вывод реальных координат
-        std::string currYString = toHandleNumber( std::to_string(currY) );
+        std::string currYString = this->ToHandleNumber( std::to_string(currY) );
         QGraphicsTextItem *textItem = new QGraphicsTextItem(QString::fromUtf8(currYString.c_str()));
         textItem->setPos(-35, canvasY-10);
         scene->addItem(textItem);
@@ -964,26 +964,26 @@ void CoordPlane::ShowCoordLineNums() {
         double usedCanvasHeight = this->GetUsedCanvasHeight();
         double usedCanvasWidth = this->GetUsedCanvasWidth();
         // По X
-        std::string currXString = toHandleNumber( std::to_string(this->GetX()) );
+        std::string currXString = this->ToHandleNumber( std::to_string(this->GetX()) );
         QGraphicsTextItem *textX = new QGraphicsTextItem( QString::fromUtf8(currXString.c_str()) );
         textX->setDefaultTextColor( debugTextColor );
         textX->setPos(20, usedCanvasHeight-20);
         scene->addItem(textX);
 
-        std::string currXeString = toHandleNumber( std::to_string(this->GetXe()) );
+        std::string currXeString = this->ToHandleNumber( std::to_string(this->GetXe()) );
         QGraphicsTextItem *textXe = new QGraphicsTextItem( QString::fromUtf8(currXeString.c_str()) );
         textXe->setDefaultTextColor( debugTextColor );
         textXe->setPos(usedCanvasWidth-50, usedCanvasHeight-20);
         scene->addItem(textXe);
 
         // По Y
-        std::string currYString = toHandleNumber( std::to_string(this->GetY()) );
+        std::string currYString = this->ToHandleNumber( std::to_string(this->GetY()) );
         QGraphicsTextItem *textY = new QGraphicsTextItem( QString::fromUtf8(currYString.c_str()) );
         textY->setDefaultTextColor( debugTextColor );
         textY->setPos(0, 0);
         scene->addItem(textY);
 
-        std::string currYeString = toHandleNumber( std::to_string(this->GetYe()) );
+        std::string currYeString = this->ToHandleNumber( std::to_string(this->GetYe()) );
         QGraphicsTextItem *textYe = new QGraphicsTextItem( QString::fromUtf8(currYeString.c_str()) );
         textYe->setDefaultTextColor( debugTextColor );
         textYe->setPos(0, usedCanvasHeight-40);
@@ -994,12 +994,12 @@ void CoordPlane::ShowCoordLineNums() {
 
 
 /**
- * @brief CoordPlane::toHandleNumber
+ * @brief CoordPlane::ToHandleNumber
  * Удаляет лишние нули в дробной части числа
  * @param  std::string str -- строка с лишними нулями
  * @return std::string     -- строка без лишних нулей
  */
-std::string CoordPlane::toHandleNumber(std::string str) {
+std::string CoordPlane::ToHandleNumber(std::string str) {
     int comma = -1;
     int lastNotNull = -1;
     int strLength = str.length();
@@ -1030,10 +1030,10 @@ std::string CoordPlane::toHandleNumber(std::string str) {
 
 
 /**
- * @brief CoordPlane::clearScene
+ * @brief CoordPlane::ClearScene
  * Очистка canvas
  */
-void CoordPlane::clearScene() {
+void CoordPlane::ClearScene() {
     this->scene->clear();
 }
 
@@ -1044,9 +1044,9 @@ void CoordPlane::clearScene() {
  * Функция отображения координатной плоскости
  */
 void CoordPlane::Show() {
-    this->resetWorkProperties();
-    this->clearScene();
-    this->refillCoordLinesArray();
+    this->ResetWorkProperties();
+    this->ClearScene();
+    this->RefillCoordLinesArray();
     this->ShowCoordLines();    // Выводим линии
     this->ShowCoordLineNums(); // Выводим значения линий
 
@@ -1056,10 +1056,10 @@ void CoordPlane::Show() {
 
 
 /**
- * @brief CoordPlane::resetWorkProperties
+ * @brief CoordPlane::ResetWorkProperties
  * Очистка рассчитываемых свойств класса
  */
-void CoordPlane::resetWorkProperties() {
+void CoordPlane::ResetWorkProperties() {
     this->SetXe(0.0);
     this->SetYe(0.0);
     this->SetSteps(0);

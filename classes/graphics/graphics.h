@@ -10,10 +10,10 @@ class Graphics {
 protected:
     bool debug = false;
 
-    Ui::MainWindow *ui;
-    CoordPlane *cp;
+    Ui::MainWindow    *ui;
+    CoordPlane        *cp;
     QGraphicsScene *scene;
-    QWidget *canvas;
+    QWidget       *canvas;
 
     static const int  graphics_numbers = 3;
     static const int dots = 101;
