@@ -29,11 +29,35 @@ protected:
     double *arrayCanvasYCoords = new double[dots];
 
 
+    static const int  graphics_numbers = 3;
+    std::string arrayGraphics[graphics_numbers];
+    int         arrayGraphicsColors[graphics_numbers];
+
+    static const int  usedColorsNums = 8;
+    QColor *usedColors[usedColorsNums] = {
+        QColor(  0,    0,    0), // black
+        QColor(  0,    0,  255), // blue
+        QColor(255,    0,  255), // fuchsia
+        QColor(255,  215,    0), // gold
+        QColor(  0,  128,    0), // green
+        QColor(173,  255,   47), // greenyellow
+        QColor(128,  128,  128), // grey
+        QColor(255,    0,    0), // red
+    };
+
+
+
+
 public:
     Graphics(Ui::MainWindow *ui, CoordPlane *cp, QGraphicsScene *scene);
 
     bool GetDebug();
     void SetDebug(bool debug);
+
+    std::string GetGraphicString(int num);
+    void        SetGraphicString(int num, std::string exp);
+    QColor     *GetGraphicColor(int num);
+    void        SetGraphicColor(int num, int color);
 
     void    toDefaultCoordArrays();
     void    refillCoordArrays();

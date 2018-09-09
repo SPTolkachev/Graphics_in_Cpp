@@ -12,6 +12,15 @@ Graphics::Graphics(Ui::MainWindow *ui, CoordPlane *cp, QGraphicsScene *scene) {
     this->debug  = this->ui->DebugFlag->isChecked();
     //std::cout << "this->debug = " << (this->debug ? "true" : "false") << " " << (this->ui->DebugFlag->isChecked() ? "true" : "false") << "\n";
     this->toDefaultCoordArrays();
+
+
+    this->arrayGraphics[0] = (ui->gFunc0->text()).toUtf8().constData();
+    this->arrayGraphics[1] = (ui->gFunc1->text()).toUtf8().constData();
+    this->arrayGraphics[2] = (ui->gFunc2->text()).toUtf8().constData();
+
+    this->arrayGraphicsColors[0] = ui->color_graph0->currentIndex();
+    this->arrayGraphicsColors[1] = ui->color_graph1->currentIndex();
+    this->arrayGraphicsColors[2] = ui->color_graph2->currentIndex();
     //this->Show();
 }
 
@@ -22,6 +31,42 @@ bool Graphics::GetDebug() {
 void Graphics::SetDebug(bool debug) {
     this->debug = debug;
 }
+
+
+
+
+std::string Graphics::GetGraphicString(int num) {
+    std::string result = "";
+    if( num >= 0 && num <= this->graphics_numbers )
+        result = this->arrayGraphics[num];
+
+    return result;
+}
+
+void Graphics::SetGraphicString(int num, std::string exp) {
+    if( num >= 0 && num <= this->graphics_numbers )
+        this->arrayGraphics[num] = exp;
+}
+
+
+QColor *Graphics::GetGraphicColor(int num) {
+    QColor * color;
+    if( num >= 0 && num <= this->graphics_numbers )
+        color = this->usedColors[ this->arrayGraphicsColors[num] ];
+    else
+        color = this->usedColors[0];
+
+    return color;
+}
+
+void Graphics::SetGraphicColor(int num, int color) {
+    if( num >= 0 && num <= this->graphics_numbers )
+        this->arrayGraphicsColors[num] = color;
+}
+
+
+
+
 
 
 double Graphics::calculateYValue(std::string exp, double X) {
