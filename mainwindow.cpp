@@ -34,7 +34,8 @@ void MainWindow::ShowGraph() {
     this->cplane->Show();
     this->graphics->Show();
 
-    if( this->GetDebug() ) std::cout << "-------------------------------------------\n\n\n";
+    if( this->GetDebug() )
+        std::cout << "-------------------------------------------\n\n\n";
 }
 
 void MainWindow::on_renderButton_clicked() { // Нажатие на кнопку "Отрис."
