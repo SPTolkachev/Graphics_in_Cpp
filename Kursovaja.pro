@@ -27,12 +27,14 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     classes/coordPlane/coordplane.cpp \
-    classes/graphics/graphics.cpp
+    classes/graphics/graphics.cpp \
+    libs/parsemathex/parsemathex.cpp
 
 HEADERS += \
         mainwindow.h \
     classes/coordPlane/coordplane.h \
-    classes/graphics/graphics.h
+    classes/graphics/graphics.h \
+    libs/parsemathex/parsemathex.h
 
 FORMS += \
         mainwindow.ui

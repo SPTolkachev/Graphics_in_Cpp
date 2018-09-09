@@ -569,6 +569,7 @@ void CoordPlane::refillCoordLinesArray() {
  */
 void CoordPlane::ShowCoordLines() {
     QPen pen(QColor(225, 225, 225));
+    QPen penAxis(QColor(225, 225, 225), 3);
     int x_lines = this->GetXLines();
     double currX;
     double canvasLeftMargin = this->GetCanvasLeftMargin();
@@ -579,7 +580,11 @@ void CoordPlane::ShowCoordLines() {
         //std::cout << "currX = (" << i << " * " << this->GetStepCanvasWidth() << ") + " << canvasLeftMargin << " = ";
         //std::cout << "currX = (" << i * this->GetStepCanvasWidth() << ") + " << canvasLeftMargin << " = ";
         //std::cout << (i * this->GetStepCanvasWidth()) + canvasLeftMargin << " = " << currX << "\n";
-        scene->addLine(currX, 0,  currX, this->GetUsedCanvasHeight(), pen);
+        if(this->coordLinesX[i])
+            scene->addLine(currX, 0,  currX, this->GetUsedCanvasHeight(), pen);
+        else
+            scene->addLine(currX, 0,  currX, this->GetUsedCanvasHeight(), penAxis);
+
         //std::cout << "scene->addLine(" << currX << ", 0,  " << currX << ", " << this->GetUsedCanvasHeight() << ", pen);\n";
     }
     //std::cout << "\n\n" << this->realHeightCanvas << " " << this->realWidthCanvas << "\n";
@@ -600,7 +605,10 @@ void CoordPlane::ShowCoordLines() {
     for(int i=0; i < y_lines; i++) {
         currY = (i * this->GetStepCanvasHeight()) + canvasTopMargin;
         //std::cout << "currY: " << "(" << i << " * " << this->GetStepCanvasHeight() << ") + " << canvasHMargin << " = " << currY << "\n";
-        scene->addLine(0, currY, this->GetUsedCanvasWidth(), currY, pen);
+        if(this->coordLinesY[i])
+            scene->addLine(0, currY, this->GetUsedCanvasWidth(), currY, pen);
+        else
+            scene->addLine(0, currY, this->GetUsedCanvasWidth(), currY, penAxis);
     }
     //scene->addLine(0, 128, realWidth,  128, pen);//x
     //scene->addLine(128, 0,  128, realHeight, pen);//y
@@ -644,17 +652,12 @@ void CoordPlane::ShowCoordLineNums() {
     //scene->addLine(-10, this->realHeightCanvas-5, -11, this->realHeightCanvas-6, pen1);
 
 
+
+
+
     int numsYLines = this->GetYLines();
     double canvasTopMargin = this->GetCanvasTopMargin();
     double currY, canvasY;
-
-    QPen penDebug(QColor(225, 0, 0));
-    std::string currYString0 = toHandleNumber( std::to_string(this->GetY()) );
-    QGraphicsTextItem *textItem0 = new QGraphicsTextItem( QString::fromUtf8(currYString0.c_str()) );
-    textItem0->setDefaultTextColor( QColor(255, 0, 0) );
-    textItem0->setPos(0, 0);
-    scene->addItem(textItem0);
-
     for(int i=0; i < numsYLines; i++) {
         canvasY = (i /*+ this->canvasHMargin*/) * this->GetStepCanvasHeight() + canvasTopMargin; // Вывод координат canvas
         currY = coordLinesY[i]; // Вывод реальных координат
@@ -667,11 +670,38 @@ void CoordPlane::ShowCoordLineNums() {
     }
 
 
-    std::string currYString = toHandleNumber( std::to_string(this->GetYe()) );
-    QGraphicsTextItem *textItem = new QGraphicsTextItem( QString::fromUtf8(currYString.c_str()) );
-    textItem->setDefaultTextColor( QColor(255, 0, 0) );
-    textItem->setPos(0, this->GetUsedCanvasHeight()-40);
-    scene->addItem(textItem);
+
+    if( this->debug ) {
+        QColor debugTextColor = QColor(225, 0, 0);
+        double usedCanvasHeight = this->GetUsedCanvasHeight();
+        double usedCanvasWidth = this->GetUsedCanvasWidth();
+        // По X
+        std::string currXString = toHandleNumber( std::to_string(this->GetX()) );
+        QGraphicsTextItem *textX = new QGraphicsTextItem( QString::fromUtf8(currXString.c_str()) );
+        textX->setDefaultTextColor( debugTextColor );
+        textX->setPos(20, usedCanvasHeight-20);
+        scene->addItem(textX);
+
+        std::string currXeString = toHandleNumber( std::to_string(this->GetXe()) );
+        QGraphicsTextItem *textXe = new QGraphicsTextItem( QString::fromUtf8(currXeString.c_str()) );
+        textXe->setDefaultTextColor( debugTextColor );
+        textXe->setPos(usedCanvasWidth-50, usedCanvasHeight-20);
+        scene->addItem(textXe);
+
+        // По Y
+        std::string currYString = toHandleNumber( std::to_string(this->GetY()) );
+        QGraphicsTextItem *textY = new QGraphicsTextItem( QString::fromUtf8(currYString.c_str()) );
+        textY->setDefaultTextColor( debugTextColor );
+        textY->setPos(0, 0);
+        scene->addItem(textY);
+
+        std::string currYeString = toHandleNumber( std::to_string(this->GetYe()) );
+        QGraphicsTextItem *textYe = new QGraphicsTextItem( QString::fromUtf8(currYeString.c_str()) );
+        textYe->setDefaultTextColor( debugTextColor );
+        textYe->setPos(0, usedCanvasHeight-40);
+        scene->addItem(textYe);
+    }
+
     /*double currY, canvasY;
     for(int i=0; i < (this->maxLines-(this->canvasHMargin==0 ? 0 : 1)); i++) {
         canvasY = (i + this->canvasHMargin) * this->GetStepCanvasHeight(); // Вывод координат canvas

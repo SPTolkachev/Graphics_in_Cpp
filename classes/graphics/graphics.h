@@ -7,6 +7,7 @@
 //#include "coordplane.h"
 //#include "mainwindow.h"
 #include "../coordPlane/coordplane.h"
+#include "../../libs/parsemathex/parsemathex.h"
 
 
 class Graphics {
@@ -32,12 +33,12 @@ public:
     Graphics(Ui::MainWindow *ui, CoordPlane *cp, QGraphicsScene *scene);
     void    toDefaultCoordArrays();
     void    refillCoordArrays();
-    double  calculateYValue(double X);
+    double  calculateYValue(std::string exp, double X);
     int     GetDots();
     void    ShowLines();
     /* Del */ double *CorrectDot(double X0, double Y0, double X1, double Y1);
-    double *CorrectY0(double X0, double Y0, double X1, double Y1);
-    double *CorrectY1(double X0, double Y0, double X1, double Y1);
+    double *CorrectY0(std::string exp, double X0, double Y0, double X1, double Y1);
+    double *CorrectY1(std::string exp, double X0, double Y0, double X1, double Y1);
     //void  clearScene();
     void    Show();
 

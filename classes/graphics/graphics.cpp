@@ -1,5 +1,6 @@
 //#include "coordplane.h"
 #include "graphics.h"
+#include "../../libs/parsemathex/parsemathex.h"
 #include <iostream>
 #include <math.h>
 
@@ -12,6 +13,44 @@ Graphics::Graphics(Ui::MainWindow *ui, CoordPlane *cp, QGraphicsScene *scene) {
 
     //this->Show();
 }
+
+
+
+
+double Graphics::calculateYValue(std::string exp, double X) {
+    double result = 0;
+    //exp = "sin($x * $x)";
+
+    int openParenthesis  = 0;
+    int closeParenthesis = 0;
+    int exp_length = exp.length();
+    for(int i=0; i < exp_length; i++) { // Проверяем скобки
+        switch (exp[i]) {
+            case '(':
+                openParenthesis++;
+                break;
+            case ')':
+                closeParenthesis++;
+                break;
+        }
+    }
+
+    if(openParenthesis == closeParenthesis) {
+        std::string expression = "$x = " + std::to_string(X) + "; " + exp;
+
+        char * charexpression = new char [expression.length()+1];
+        strcpy (charexpression, expression.c_str());
+
+        std::cout << expression << " = " << result << "\n";
+        result = ParserMathExpression(charexpression);
+    }
+
+    return result;//X * X;
+}
+
+
+
+
 
 void Graphics::toDefaultCoordArrays() {
     int dots = this->GetDots();
@@ -48,9 +87,10 @@ void Graphics::refillCoordArrays() {
     double X_PsiP = this->cp->GetX_PsiP();
     double Y_PsiP = this->cp->GetY_PsiP();
     if(this->debug) std::cout << "X:\n";
+    std::string exp = "sin($x)";
     for(int i=0; i < dots; i++) {
         double x1 = X + i * step;
-        double y1 = this->calculateYValue(x1);
+        double y1 = this->calculateYValue(exp, x1);
 
         double cnv_x1 = (x1 - X)  / X_PsiP;
         double cnv_y1 = (-y1 + Y) / Y_PsiP;
@@ -90,7 +130,7 @@ void Graphics::refillCoordArrays() {
             switch (action) { // Корректировка
                 case 1011: // Y0 не попал в диапазон
                     std::cout << "Пограничная ситуация (Y0) this->scene->addLine("<<x0<<", "<<y0<<",  "<<x1<<", "<<y1<<",  pen);\n";
-                    correctDot = this->CorrectY0(x0, y0, x1, y1);
+                    correctDot = this->CorrectY0(exp, x0, y0, x1, y1);
                     this->arrayXCoords[i-1] = correctDot[0];
                     this->arrayYCoords[i-1] = correctDot[1];
                     this->arrayCanvasXCoords[i-1] = ( correctDot[0] - X)  / X_PsiP;
@@ -98,7 +138,7 @@ void Graphics::refillCoordArrays() {
                     break;
                 case 1110: // Y1 не попал в диапазон
                     std::cout << "Пограничная ситуация (Y1) this->scene->addLine("<<x0<<", "<<y0<<",  "<<x1<<", "<<y1<<",  pen);\n";
-                    correctDot = this->CorrectY1(x0, y0, x1, y1);
+                    correctDot = this->CorrectY1(exp, x0, y0, x1, y1);
                     if(correctDot[0] != correctDot[2] && correctDot[1] != correctDot[3]) {
                         x1     = correctDot[2];
                         y1     = correctDot[3];
@@ -235,13 +275,9 @@ void Graphics::ShowLines() {
 }
 
 
-double Graphics::calculateYValue(double X) {
-    return X * X;
-}
 
 
-
-double *Graphics::CorrectY0(double X0, double Y0, double X1, double Y1) {
+double *Graphics::CorrectY0(std::string exp, double X0, double Y0, double X1, double Y1) {
     double  cpY  = this->cp->GetY();
     double  cpYe = this->cp->GetYe();
     double *newCoord = new double[4];
@@ -265,7 +301,7 @@ double *Graphics::CorrectY0(double X0, double Y0, double X1, double Y1) {
     for(int i=0; i <= differenceXDots; i++) {
         currX0 = X0 + i * differenceXStep;
         // currX1 = X1 - i * differenceXStep;
-        currY0 = calculateYValue(currX0);
+        currY0 = calculateYValue(exp, currX0);
 
         std::cout << cpYe<<" <= "<<currY0<<" && "<<currY0<<" <= "<<cpYe_dev<<" || ";
         std::cout << cpY<<" >= "<<currY0<<" && "<<currY0<<" >= "<<cpY_dev<<"\n";
@@ -295,7 +331,7 @@ double *Graphics::CorrectY0(double X0, double Y0, double X1, double Y1) {
     return newCoord;
 }
 
-double *Graphics::CorrectY1(double X0, double Y0, double X1, double Y1) {
+double *Graphics::CorrectY1(std::string exp, double X0, double Y0, double X1, double Y1) {
     double cpY  = this->cp->GetY();
     double cpYe = this->cp->GetYe();
     double* newCoord = new double[4];
@@ -319,7 +355,7 @@ double *Graphics::CorrectY1(double X0, double Y0, double X1, double Y1) {
     bool successfullyCorrect = false;
     for(int i=0; i <= differenceXDots; i++) {
         currX1 = X1 - i * differenceXStep;
-        currY1 = calculateYValue(currX1);
+        currY1 = calculateYValue(exp, currX1);
         std::cout << cpYe<<" <= "<<currY1<<" && "<<currY1<<" <= "<<cpYe_dev<<" || ";
         std::cout << cpY<<" >= "<<currY1<<" && "<<currY1<<" >= "<<cpY_dev<<"\n";
         if(
@@ -449,7 +485,7 @@ double *Graphics::CorrectDot(double X0, double Y0, double X1, double Y1) {
                 bool succssesfullDot = false;
                 for(int i=0; i < differenceXSteps; i++) {
                     currX0 = X0 + i * differenceXStep;
-                    currY0 = calculateYValue(currX0);
+                    currY0 = calculateYValue("$x", currX0);
                     if(cpY >= currY0 && currY0 <= cpY_dev) {
                         succssesfullDot = true;
                         break;
