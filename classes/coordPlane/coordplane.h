@@ -134,6 +134,10 @@ protected:
 
 public:
     CoordPlane(Ui::MainWindow *ui, QGraphicsScene *scene, double x = -5, double y = 5, double scale = 10);
+
+    bool GetDebug();
+    void SetDebug(bool debug);
+
     double GetX();
     void   SetX(double x);
     //double GetXc(); // X center

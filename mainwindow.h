@@ -39,11 +39,17 @@ private slots:
 
     void on_to_leftDownButton_clicked();
 
+    void on_DebugFlag_stateChanged(int arg1);
+
 private:
     Ui::MainWindow    *ui;
     QGraphicsScene *scene;
     CoordPlane    *cplane;
     Graphics    *graphics;
+
+    bool debug;
+    bool GetDebug();
+    void SetDebug(bool debug);
 };
 
 #endif // MAINWINDOW_H

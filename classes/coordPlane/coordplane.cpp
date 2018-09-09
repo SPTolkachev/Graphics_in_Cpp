@@ -9,10 +9,20 @@ CoordPlane::CoordPlane(Ui::MainWindow *ui, QGraphicsScene *scene, double x, doub
     this->ui = ui;
     this->scene = scene;//new QGraphicsScene(ui->graphicsView);
     //this->SetSteps(steps);
-
+    this->debug = this->ui->DebugFlag->isChecked();
 
     this->canvas  = this->ui->graphicsView->viewport();
 }
+
+
+bool CoordPlane::GetDebug() {
+    return this->debug;
+}
+
+void CoordPlane::SetDebug(bool debug) {
+    this->debug = debug;
+}
+
 
 double CoordPlane::GetX() {
     return this->X;

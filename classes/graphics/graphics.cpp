@@ -9,12 +9,19 @@ Graphics::Graphics(Ui::MainWindow *ui, CoordPlane *cp, QGraphicsScene *scene) {
     this->cp = cp;
     this->scene  = scene;//this->cp->GetScene();//new QGraphicsScene(ui->graphicsView);
     this->canvas = this->ui->graphicsView->viewport();
+    this->debug  = this->ui->DebugFlag->isChecked();
+    //std::cout << "this->debug = " << (this->debug ? "true" : "false") << " " << (this->ui->DebugFlag->isChecked() ? "true" : "false") << "\n";
     this->toDefaultCoordArrays();
-
     //this->Show();
 }
 
+bool Graphics::GetDebug() {
+    return this->debug;
+}
 
+void Graphics::SetDebug(bool debug) {
+    this->debug = debug;
+}
 
 
 double Graphics::calculateYValue(std::string exp, double X) {

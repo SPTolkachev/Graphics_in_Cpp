@@ -31,6 +31,10 @@ protected:
 
 public:
     Graphics(Ui::MainWindow *ui, CoordPlane *cp, QGraphicsScene *scene);
+
+    bool GetDebug();
+    void SetDebug(bool debug);
+
     void    toDefaultCoordArrays();
     void    refillCoordArrays();
     double  calculateYValue(std::string exp, double X);
