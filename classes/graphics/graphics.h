@@ -21,17 +21,71 @@ protected:
 
     double initialDouble = -1000;//std::numeric_limits<double>::is_iec559;
 
+
+
+
+    static const int  graphics_numbers = 1;
     static const int dots = 101;
-    double *arrayXCoords  = new double[dots]; // gcc запоняет нулями
-    double *arrayYCoords  = new double[dots];
 
-    double *arrayCanvasXCoords = new double[dots];
-    double *arrayCanvasYCoords = new double[dots];
+    /*
+    double **arrayXCoords = new double*[graphics_numbers];//[dots]; // gcc запоняет нулями
+    double **arrayYCoords = new double*[graphics_numbers];//[dots];
+
+    double **arrayCanvasXCoords = new double*[graphics_numbers];//[dots];
+    double **arrayCanvasYCoords = new double*[graphics_numbers];//[dots];
+    */
 
 
-    static const int  graphics_numbers = 3;
+
+
+
+
+
+
+
+
+
+
+        /*
+        double (*arrayXCoords)[dots] = new double[graphics_numbers][dots];
+        double (*arrayYCoords)[dots] = new double[graphics_numbers][dots];
+        double (*arrayCanvasXCoords)[dots] = new double[graphics_numbers][dots];
+        double (*arrayCanvasYCoords)[dots] = new double[graphics_numbers][dots];
+        */
+
+        double *arrayXCoords = new double[dots];
+        double *arrayYCoords = new double[dots];
+        double *arrayCanvasXCoords = new double[dots];
+        double *arrayCanvasYCoords = new double[dots];
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /*
+    double *arrayXCoords0 = new double[dots];
+    double *arrayXCoords1 = new double[dots];
+    double *arrayXCoords2 = new double[dots];
+
+    double **arrayXCoords[graphics_numbers] = { *arrayXCoords0, *arrayXCoords1, *arrayXCoords2 };
+    double **arrayYCoords = new double*[graphics_numbers][dots];
+
+    double **arrayCanvasXCoords = new double*[graphics_numbers][dots];
+    double **arrayCanvasYCoords = new double*[graphics_numbers][dots];
+    */
+
+
     std::string arrayGraphics[graphics_numbers];
     int         arrayGraphicsColors[graphics_numbers];
+
 
     static const int  usedColorsNums   = 8;
     QColor *usedColors[usedColorsNums] = {
@@ -48,6 +102,7 @@ protected:
 
 
 
+
 public:
     Graphics(Ui::MainWindow *ui, CoordPlane *cp, QGraphicsScene *scene);
 
@@ -59,15 +114,15 @@ public:
     QColor     *GetGraphicColor(int num);
     void        SetGraphicColor(int num, int color);
 
+    bool    CheckExpression(std::string exp);
     void    toDefaultCoordArrays();
     void    refillCoordArrays();
     double  calculateYValue(std::string exp, double X);
     int     GetDots();
     void    ShowLines();
-    /* Del */ double *CorrectDot(double X0, double Y0, double X1, double Y1);
+    //* Del */ double *CorrectDot(double X0, double Y0, double X1, double Y1);
     double *CorrectY0(std::string exp, double X0, double Y0, double X1, double Y1);
     double *CorrectY1(std::string exp, double X0, double Y0, double X1, double Y1);
-    //void  clearScene();
     void    Show();
 
 
