@@ -49,7 +49,7 @@ void MainWindow::on_renderButton_clicked() { // Нажатие на кнопку
 void MainWindow::on_scalePlane_valueChanged(double arg1) {
     this->cplane->SetScale(arg1);
     if( this->GetDebug() ) std::cout << "SetScale(" << arg1 << ")\n";
-    this->ShowGraph(); // Отрисовка
+    this->ShowGraph();
 }
 
 void MainWindow::on_to_upButton_clicked() {
@@ -57,21 +57,21 @@ void MainWindow::on_to_upButton_clicked() {
     //std::cout << "newY = " << this->cplane->GetY() << " + " << ui->to_upStep->value() << "\n";
     this->cplane->SetY(newY);
     if( this->GetDebug() ) std::cout << "SetY(" << newY << ")\n";
-    this->ShowGraph(); // Отрисовка
+    this->ShowGraph();
 }
 
 void MainWindow::on_to_rightButton_clicked() {
     double newX = this->cplane->GetX() + ui->to_rightStep->value();
     this->cplane->SetX(newX);
     if( this->GetDebug() ) std::cout << "SetX+(" << newX << ")\n";
-    this->ShowGraph(); // Отрисовка
+    this->ShowGraph();
 }
 
 void MainWindow::on_to_downButton_clicked() {
     double newY = this->cplane->GetY() - ui->to_downStep->value();
     this->cplane->SetY(newY);
     if( this->GetDebug() ) std::cout << "SetY+(" << newY << ")\n";
-    this->ShowGraph(); // Отрисовка
+    this->ShowGraph();
 }
 
 
@@ -79,7 +79,7 @@ void MainWindow::on_to_leftButton_clicked() {
     double newX = this->cplane->GetX() - ui->to_leftStep->value();
     this->cplane->SetX(newX);
     if( this->GetDebug() ) std::cout << "SetX-(" << newX << ")\n";
-    this->ShowGraph(); // Отрисовка
+    this->ShowGraph();
 }
 
 void MainWindow::on_to_leftUpButton_clicked() {

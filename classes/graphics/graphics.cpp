@@ -9,24 +9,20 @@ Graphics::Graphics(Ui::MainWindow *ui, CoordPlane *cp, QGraphicsScene *scene) {
     this->scene  = scene;
     this->canvas = this->ui->graphicsView->viewport();
     this->debug  = this->ui->DebugFlag->isChecked();
-    this->toDefaultCoordArrays();
+    this->ToDefaultCoordArrays();
 
 
     this->SetGraphicString( 0, ui->gFunc0->text() );
-    //this->SetGraphicString( 1, ui->gFunc1->text() );
-    //this->SetGraphicString( 2, ui->gFunc2->text() );
-
-    //this->arrayGraphics[0] = (ui->gFunc0->text()).toUtf8().constData();
-    //this->arrayGraphics[1] = (ui->gFunc1->text()).toUtf8().constData();
-    //this->arrayGraphics[2] = (ui->gFunc2->text()).toUtf8().constData();
+    if(1) {
+        this->SetGraphicString( 1, ui->gFunc1->text() );
+        this->SetGraphicString( 2, ui->gFunc2->text() );
+    }
 
     this->SetGraphicColor( 0, ui->color_graph0->currentIndex() );
-    //this->SetGraphicColor( 1, ui->color_graph1->currentIndex() );
-    //this->SetGraphicColor( 2, ui->color_graph2->currentIndex() );
-
-    //this->arrayGraphicsColors[0] = ui->color_graph0->currentIndex();
-    //this->arrayGraphicsColors[1] = ui->color_graph1->currentIndex();
-    //this->arrayGraphicsColors[2] = ui->color_graph2->currentIndex();
+    if(2) {
+        this->SetGraphicColor( 1, ui->color_graph1->currentIndex() );
+        this->SetGraphicColor( 2, ui->color_graph2->currentIndex() );
+    }
 }
 
 bool Graphics::GetDebug() {
@@ -73,7 +69,7 @@ void Graphics::SetGraphicColor(int num, int color) {
 
 
 
-double Graphics::calculateYValue(std::string exp, double X) {
+double Graphics::CalculateYValue(std::string exp, double X) {
     double result = 0;
 
     if( this->CheckExpression(exp) ) {
@@ -82,7 +78,7 @@ double Graphics::calculateYValue(std::string exp, double X) {
         char * charexpression = new char [expression.length()+1];
         strcpy (charexpression, expression.c_str());
 
-        std::cout << expression << " = " << result << "\n";
+        //std::cout << expression << " = " << result << "\n";
         result = ParserMathExpression(charexpression);
     }
 
@@ -93,16 +89,16 @@ double Graphics::calculateYValue(std::string exp, double X) {
 
 
 
-void Graphics::toDefaultCoordArrays() {
+void Graphics::ToDefaultCoordArrays() {
     int dots = this->GetDots();
-    //for(int i=0; i < this->graphics_numbers; i++) {
+    for(int i=0; i < this->graphics_numbers; i++) {
         for(int j=0; j < dots; j++) {
-            this->arrayXCoords/*[i]*/[j] = 0;
-            this->arrayYCoords/*[i]*/[j] = 0;
-            this->arrayCanvasXCoords/*[i]*/[j] = 0;
-            this->arrayCanvasYCoords/*[i]*/[j] = 0;
+            this->arrayXCoords[i][j] = 0;
+            this->arrayYCoords[i][j] = 0;
+            this->arrayCanvasXCoords[i][j] = 0;
+            this->arrayCanvasYCoords[i][j] = 0;
         }
-    //}
+    }
 }
 
 
@@ -129,17 +125,17 @@ bool Graphics::CheckExpression(std::string exp) {
         }
     }
 
-    if(openParenthesis != 0 && openParenthesis == closeParenthesis)
+    if(openParenthesis != 0 && openParenthesis != closeParenthesis)
         return false;
 
-    if(closeParenthesis != 0 && openParenthesis == closeParenthesis)
+    if(closeParenthesis != 0 && openParenthesis != closeParenthesis)
         return false;
 
     return true;
 }
 
 
-void Graphics::refillCoordArrays() {
+void Graphics::RefillCoordArrays() {
     double X  = this->cp->GetX();
     double Y  = this->cp->GetY();
     double Xe = this->cp->GetXe();
@@ -151,30 +147,29 @@ void Graphics::refillCoordArrays() {
 
     double X_PsiP = this->cp->GetX_PsiP();
     double Y_PsiP = this->cp->GetY_PsiP();
-    //for(int i=0; i < this->graphics_numbers; i++) {
-        if(this->debug) std::cout << "X:\n";
+    for(int i=0; i < this->graphics_numbers; i++) {
+        std::string exp = GetGraphicString(i);
+        if( !this->CheckExpression(exp) )
+            continue;
 
-        std::string exp = GetGraphicString(0/*i*/);
-        /*if( this->CheckExpression(exp) )
-            continue;*/
-        if( this->CheckExpression(exp) ) {
+        if(this->debug) std::cout << "X:\n";
         for(int j=0; j < dots; j++) {
             double x1 = X + j * step;
-            double y1 = this->calculateYValue(exp, x1);
+            double y1 = this->CalculateYValue(exp, x1);
 
             double cnv_x1 = (x1  - X) / X_PsiP;
             double cnv_y1 = (-y1 + Y) / Y_PsiP;
 
             if(j) { // Проверка
-                double x0 = this->arrayXCoords/*[i]*/[j-1];
-                double y0 = this->arrayYCoords/*[i]*/[j-1];
+                double x0 = this->arrayXCoords[i][j-1];
+                double y0 = this->arrayYCoords[i][j-1];
 
                 bool condition_x0 = (x0 >= X && x0 <= Xe);
                 bool condition_x1 = (x1 >= X && x1 <= Xe);
                 bool condition_y0 = (y0 <= Y && y0 >= Ye);
                 bool condition_y1 = (y1 <= Y && y1 >= Ye);
 
-                if(this->debug) {
+                if(0 && this->debug) {
                     std::cout << "\n";
                     std::cout << "condition_x0 = ("<<x0<<" >= "<<X<<" && "<<x0<<" <= "<<Xe<<") = "<< (condition_x0 ? "true" : "false") <<";   ";
                     std::cout << "condition_x1 = ("<<x1<<" >= "<<X<<" && "<<x1<<" <= "<<Xe<<") = "<< (condition_x1 ? "true" : "false") <<";\n";
@@ -193,10 +188,10 @@ void Graphics::refillCoordArrays() {
                     case 1011: // Y0 не попал в диапазон
                         if(this->debug) std::cout << "Пограничная ситуация (Y0) this->scene->addLine("<<x0<<", "<<y0<<",  "<<x1<<", "<<y1<<",  pen);\n";
                         correctDot = this->CorrectY0(exp, x0, y0, x1, y1);
-                        this->arrayXCoords/*[i]*/[j-1] = correctDot[0];
-                        this->arrayYCoords/*[i]*/[j-1] = correctDot[1];
-                        this->arrayCanvasXCoords/*[i]*/[j-1] = ( correctDot[0] - X)  / X_PsiP;
-                        this->arrayCanvasYCoords/*[i]*/[j-1] = (-correctDot[1] + Y)  / Y_PsiP;
+                        this->arrayXCoords[i][j-1] = correctDot[0];
+                        this->arrayYCoords[i][j-1] = correctDot[1];
+                        this->arrayCanvasXCoords[i][j-1] = ( correctDot[0] - X)  / X_PsiP;
+                        this->arrayCanvasYCoords[i][j-1] = (-correctDot[1] + Y)  / Y_PsiP;
                         break;
                     case 1110: // Y1 не попал в диапазон
                         if(this->debug) std::cout << "Пограничная ситуация (Y1) this->scene->addLine("<<x0<<", "<<y0<<",  "<<x1<<", "<<y1<<",  pen);\n";
@@ -211,15 +206,14 @@ void Graphics::refillCoordArrays() {
                 }
             }
 
-            this->arrayXCoords/*[i]*/[j] = x1;
-            this->arrayYCoords/*[i]*/[j] = y1;
+            this->arrayXCoords[i][j] = x1;
+            this->arrayYCoords[i][j] = y1;
 
-            this->arrayCanvasXCoords/*[i]*/[j] = cnv_x1;
-            this->arrayCanvasYCoords/*[i]*/[j] = cnv_y1;
+            this->arrayCanvasXCoords[i][j] = cnv_x1;
+            this->arrayCanvasYCoords[i][j] = cnv_y1;
         }
         if(this->debug) std::cout << "\n";
-        }
-    //}
+    }
 }
 
 
@@ -231,24 +225,23 @@ void Graphics::ShowLines() {
     double Xe = this->cp->GetXe();
     double Ye = this->cp->GetYe();
 
-    //for(int i=0; i < this->graphics_numbers; i++) {
-        QPen pen(*this->GetGraphicColor(0/*i*/)/*QColor(0, 225, 0)*/);
-        std::string exp = GetGraphicString(0/*i*/);
-        /*if( this->CheckExpression(exp) )
-            continue; */
-        std::cout << exp << " " << (this->CheckExpression(exp) ? "true" : "false") << "\n";
-    if( this->CheckExpression(exp) ) {
+    for(int i=0; i < this->graphics_numbers; i++) {
+        QPen pen(*this->GetGraphicColor(i));
+        std::string exp = GetGraphicString(i);
+        if( !this->CheckExpression(exp) )
+            continue;
+
         for(int j=0; j < dots; j++) {
             if(j) {
-                double x0 = this->arrayXCoords/*[i]*/[j-1];
-                double y0 = this->arrayYCoords/*[i]*/[j-1];
-                double x1 = this->arrayXCoords/*[i]*/[j];
-                double y1 = this->arrayYCoords/*[i]*/[j];
+                double x0 = this->arrayXCoords[i][j-1];
+                double y0 = this->arrayYCoords[i][j-1];
+                double x1 = this->arrayXCoords[i][j];
+                double y1 = this->arrayYCoords[i][j];
 
-                double cnv_x0 = this->arrayCanvasXCoords/*[i]*/[j-1];
-                double cnv_y0 = this->arrayCanvasYCoords/*[i]*/[j-1];
-                double cnv_x1 = this->arrayCanvasXCoords/*[i]*/[j];
-                double cnv_y1 = this->arrayCanvasYCoords/*[i]*/[j];
+                double cnv_x0 = this->arrayCanvasXCoords[i][j-1];
+                double cnv_y0 = this->arrayCanvasYCoords[i][j-1];
+                double cnv_x1 = this->arrayCanvasXCoords[i][j];
+                double cnv_y1 = this->arrayCanvasYCoords[i][j];
 
                 bool condition_x0 = (x0 >= X && x0 <= Xe) ? true : false;
                 bool condition_x1 = (x1 >= X && x1 <= Xe) ? true : false;
@@ -265,7 +258,6 @@ void Graphics::ShowLines() {
             }
         }
     }
-    //}
 }
 
 
@@ -293,7 +285,7 @@ double *Graphics::CorrectY0(std::string exp, double X0, double Y0, double X1, do
 
     for(int i=0; i <= differenceXDots; i++) {
         currX0 = X0 + i * differenceXStep;
-        currY0 = calculateYValue(exp, currX0);
+        currY0 = this->CalculateYValue(exp, currX0);
 
         if(
             (cpYe <= currY0 && currY0 <= cpYe_dev) || // по нижнему пределу
@@ -341,7 +333,7 @@ double *Graphics::CorrectY1(std::string exp, double X0, double Y0, double X1, do
 
     for(int i=0; i <= differenceXDots; i++) {
         currX1 = X1 - i * differenceXStep;
-        currY1 = calculateYValue(exp, currX1);
+        currY1 = this->CalculateYValue(exp, currX1);
 
         if(
             (cpYe <= currY1 && currY1 <= cpYe_dev) || // по нижнему пределу
@@ -369,7 +361,7 @@ double *Graphics::CorrectY1(std::string exp, double X0, double Y0, double X1, do
 
 
 void Graphics::Show() {
-    this->refillCoordArrays();
+    this->RefillCoordArrays();
     this->ShowLines();
     ui->graphicsView->setScene( this->scene );
 }

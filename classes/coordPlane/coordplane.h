@@ -158,10 +158,10 @@ public:
     double GetStep();
 
     double GetX_PsiP();
-    double SetX_PsiP(double coeff);
+    void   SetX_PsiP(double coeff);
 
     double GetY_PsiP();
-    double SetY_PsiP(double coeff);
+    void   SetY_PsiP(double coeff);
 
     //QGraphicsScene *GetScene();
     //void            SetScene();

@@ -279,6 +279,9 @@
       </property>
      </widget>
      <widget class="QCheckBox" name="DebugFlag">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>200</x>
@@ -289,6 +292,12 @@
       </property>
       <property name="text">
        <string>Debug</string>
+      </property>
+      <property name="checked">
+       <bool>false</bool>
+      </property>
+      <property name="tristate">
+       <bool>false</bool>
       </property>
      </widget>
     </widget>
@@ -301,6 +310,9 @@
       <width>171</width>
       <height>22</height>
      </rect>
+    </property>
+    <property name="text">
+     <string>$x</string>
     </property>
     <property name="maxLength">
      <number>500</number>

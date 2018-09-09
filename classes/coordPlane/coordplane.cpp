@@ -391,7 +391,7 @@ double CoordPlane::GetX_PsiP() { // Points in Point
     return X_PsiP;
 }
 
-double CoordPlane::SetX_PsiP(double coeff) {
+void CoordPlane::SetX_PsiP(double coeff) {
     this->X_PsiP = coeff;
 }
 
@@ -406,7 +406,7 @@ double CoordPlane::GetY_PsiP() { // Points in Point
     return Y_PsiP;
 }
 
-double CoordPlane::SetY_PsiP(double coeff) {
+void CoordPlane::SetY_PsiP(double coeff) {
     this->Y_PsiP = coeff;
 }
 
