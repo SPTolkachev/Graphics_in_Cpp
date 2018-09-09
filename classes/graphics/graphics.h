@@ -11,7 +11,7 @@
 
 class Graphics {
 protected:
-    bool debug = false;
+    bool debug = true;
 
     Ui::MainWindow *ui;
     CoordPlane *cp;

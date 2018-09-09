@@ -45,21 +45,86 @@ void Graphics::refillCoordArrays() {
     int    dots = this->GetDots();
     double step = (Xe - X) / (dots - 1);
 
-
-
-
     double X_PsiP = this->cp->GetX_PsiP();
     double Y_PsiP = this->cp->GetY_PsiP();
     if(this->debug) std::cout << "X:\n";
     for(int i=0; i < dots; i++) {
-        this->arrayXCoords[i] = X + i * step;
-        this->arrayYCoords[i] = this->calculateYValue( this->arrayXCoords[i] );
-        if(this->debug) std::cout <<"    this->arrayXCoords["<< i <<"] = " << this->arrayXCoords[i] << ";    this->arrayYCoords["<< i <<"] = " << this->arrayYCoords[i] << ";\n";
+        double x1 = X + i * step;
+        double y1 = this->calculateYValue(x1);
 
-        this->arrayCanvasXCoords[i] = (this->arrayXCoords[i] - X)  / X_PsiP;
-        this->arrayCanvasYCoords[i] = (-this->arrayYCoords[i] + Y) / Y_PsiP;
+        double cnv_x1 = (x1 - X)  / X_PsiP;
+        double cnv_y1 = (-y1 + Y) / Y_PsiP;
+
+        if(i) { // Проверка
+            double x0 = this->arrayXCoords[i-1];
+            double y0 = this->arrayYCoords[i-1];
+            std::cout << "x0["<<i-1<<"] = " << x0 << "; y0["<<i-1<<"] = "<<y0<<"\n";
+
+            //double cnv_x0 = this->arrayCanvasXCoords[i-1];
+            //double cnv_y0 = this->arrayCanvasYCoords[i-1];
+
+            if(this->debug) std::cout << "\n";
+            bool condition_x0 = (x0 >= X && x0 <= Xe) ? true : false;
+            if(this->debug) std::cout << "condition_x0 = ("<<x0<<" >= "<<X<<" && "<<x0<<" <= "<<Xe<<") = "<< (condition_x0 ? "true" : "false") <<";   ";
+            bool condition_x1 = (x1 >= X && x1 <= Xe) ? true : false;
+            if(this->debug) std::cout << "condition_x1 = ("<<x1<<" >= "<<X<<" && "<<x1<<" <= "<<Xe<<") = "<< (condition_x1 ? "true" : "false") <<";\n";
+            bool condition_y0 = (y0 <= Y && y0 >= Ye);
+            if(this->debug) std::cout << "condition_y0 = ("<<y0<<" <= "<<Y<<" && "<<y0<<" >= "<<Ye<<") = "<< (condition_y0 ? "true" : "false") <<";   ";
+            bool condition_y1 = (y1 <= Y && y1 >= Ye);
+            if(this->debug) std::cout << "condition_y1 = ("<<y1<<" <= "<<Y<<" && "<<y1<<" >= "<<Ye<<") = "<< (condition_y1 ? "true" : "false") <<";\n";
+
+            /*
+            if(this->debug) std::cout << (condition_x0 ? "true" : "false") << " ";
+            if(this->debug) std::cout << (condition_y0 ? "true" : "false") << " ";
+            if(this->debug) std::cout << (condition_x1 ? "true" : "false") << " ";
+            if(this->debug) std::cout << (condition_y1 ? "true" : "false") << "\n\n";
+            */
+
+            int action = 0;
+            action += condition_x0 ? 1000 : 0;
+            action += condition_y0 ?  100 : 0;
+            action += condition_x1 ?   10 : 0;
+            action += condition_y1 ?    1 : 0;
+            double *correctDot;
+
+            switch (action) { // Корректировка
+                case 1011: // Y0 не попал в диапазон
+                    std::cout << "Пограничная ситуация (Y0) this->scene->addLine("<<x0<<", "<<y0<<",  "<<x1<<", "<<y1<<",  pen);\n";
+                    correctDot = this->CorrectY0(x0, y0, x1, y1);
+                    this->arrayXCoords[i-1] = correctDot[0];
+                    this->arrayYCoords[i-1] = correctDot[1];
+                    this->arrayCanvasXCoords[i-1] = ( correctDot[0] - X)  / X_PsiP;
+                    this->arrayCanvasYCoords[i-1] = (-correctDot[1] + Y)  / Y_PsiP;
+                    break;
+                case 1110: // Y1 не попал в диапазон
+                    std::cout << "Пограничная ситуация (Y1) this->scene->addLine("<<x0<<", "<<y0<<",  "<<x1<<", "<<y1<<",  pen);\n";
+                    correctDot = this->CorrectY1(x0, y0, x1, y1);
+                    if(correctDot[0] != correctDot[2] && correctDot[1] != correctDot[3]) {
+                        x1     = correctDot[2];
+                        y1     = correctDot[3];
+                        cnv_x1 = ( correctDot[2] - X) / X_PsiP;
+                        cnv_y1 = (-correctDot[3] + Y) / Y_PsiP;
+                    }
+                    break;
+                default:
+                std::cout << "Добавляем this->scene->addLine("<<x0<<", "<<y0<<", "<<x1<<", "<<y1<<", pen);\n";
+            }
+        }
+
+        this->arrayXCoords[i] = x1;
+        this->arrayYCoords[i] = y1;
+        // if(this->debug) std::cout <<"    this->arrayXCoords["<< i <<"] = " << this->arrayXCoords[i] << ";    this->arrayYCoords["<< i <<"] = " << this->arrayYCoords[i] << ";\n";
+
+        this->arrayCanvasXCoords[i] = cnv_x1;
+        this->arrayCanvasYCoords[i] = cnv_y1;
     }
     if(this->debug) std::cout << "\n";
+
+    /*
+    for(int i=0; i < dots; i++) {
+        std::cout << "this->arrayXCoords["<<i<<"] = "<<this->arrayXCoords[i]<<";   this->arrayYCoords["<<i<<"] = "<<this->arrayYCoords[i]<<";\n";
+    }
+    */
 }
 
 
@@ -72,9 +137,9 @@ void Graphics::ShowLines() {
     double Ye = this->cp->GetYe();
     QPen pen(QColor(0, 225, 0));
 
-    double X_PsiP = this->cp->GetX_PsiP();
-    double Y_PsiP = this->cp->GetY_PsiP();
-
+    //double X_PsiP = this->cp->GetX_PsiP();
+    //double Y_PsiP = this->cp->GetY_PsiP();
+    std::cout <<"*****\n";
     for(int i=0; i < dots; i++) {
         if(i) {
             double x0 = this->arrayXCoords[i-1];
@@ -87,36 +152,47 @@ void Graphics::ShowLines() {
             double cnv_x1 = this->arrayCanvasXCoords[i];
             double cnv_y1 = this->arrayCanvasYCoords[i];
 
-            if(this->debug) std::cout << "\n";
+            //if(this->debug) std::cout << "\n";
             bool condition_x0 = (x0 >= X && x0 <= Xe) ? true : false;
-            if(this->debug) std::cout << "condition_x0 = ("<<x0<<" >= "<<X<<" && "<<x0<<" <= "<<Xe<<") = "<< (condition_x0 ? "true" : "false") <<";   ";
+            //if(this->debug) std::cout << "condition_x0 = ("<<x0<<" >= "<<X<<" && "<<x0<<" <= "<<Xe<<") = "<< (condition_x0 ? "true" : "false") <<";   ";
             bool condition_x1 = (x1 >= X && x1 <= Xe) ? true : false;
-            if(this->debug) std::cout << "condition_x1 = ("<<x1<<" >= "<<X<<" && "<<x1<<" <= "<<Xe<<") = "<< (condition_x1 ? "true" : "false") <<";\n";
+            //if(this->debug) std::cout << "condition_x1 = ("<<x1<<" >= "<<X<<" && "<<x1<<" <= "<<Xe<<") = "<< (condition_x1 ? "true" : "false") <<";\n";
             bool condition_y0 = (y0 <= Y && y0 >= Ye);
-            if(this->debug) std::cout << "condition_y0 = ("<<y0<<" <= "<<Y<<" && "<<y0<<" >= "<<Ye<<") = "<< (condition_y0 ? "true" : "false") <<";   ";
+            //if(this->debug) std::cout << "condition_y0 = ("<<y0<<" <= "<<Y<<" && "<<y0<<" >= "<<Ye<<") = "<< (condition_y0 ? "true" : "false") <<";   ";
             bool condition_y1 = (y1 <= Y && y1 >= Ye);
-            if(this->debug) std::cout << "condition_y1 = ("<<y1<<" <= "<<Y<<" && "<<y1<<" >= "<<Ye<<") = "<< (condition_y1 ? "true" : "false") <<";\n";
+            //if(this->debug) std::cout << "condition_y1 = ("<<y1<<" <= "<<Y<<" && "<<y1<<" >= "<<Ye<<") = "<< (condition_y1 ? "true" : "false") <<";\n";
 
+            /*
             if(this->debug) std::cout << (condition_x0 ? "true" : "false") << " ";
             if(this->debug) std::cout << (condition_y0 ? "true" : "false") << " ";
             if(this->debug) std::cout << (condition_x1 ? "true" : "false") << " ";
             if(this->debug) std::cout << (condition_y1 ? "true" : "false") << "\n\n";
-
+            */
             int action = 0;
             action += condition_x0 ? 1000 : 0;
             action += condition_y0 ?  100 : 0;
             action += condition_x1 ?   10 : 0;
             action += condition_y1 ?    1 : 0;
+
+            if(condition_x0 && condition_y0 && condition_x1 && condition_y1) {
+                this->scene->addLine(cnv_x0, cnv_y0,  cnv_x1, cnv_y1,  pen);
+                std::cout << "Добавляем this->scene->addLine("<<x0<<", "<<y0<<", "<<x1<<", "<<y1<<", pen);\n";
+            }
+            else {
+                std::cout << "Пропускаем this->scene->addLine("<<x0<<", "<<y0<<", "<<x1<<", "<<y1<<", pen);\n";
+            }
+
+            /*
             double *correctDot;
             switch (action) {
             case 1111:
                 this->scene->addLine(cnv_x0, cnv_y0,  cnv_x1, cnv_y1,  pen);
-                //* if(this->debug) */ std::cout << "this->scene->addLine("<<cnv_x0<<", "<<cnv_y0<<", "<<cnv_x1<<", "<<cnv_y1<<", pen);\n";
+                //* if(this->debug) * / std::cout << "this->scene->addLine("<<cnv_x0<<", "<<cnv_y0<<", "<<cnv_x1<<", "<<cnv_y1<<", pen);\n";
                 std::cout << "this->scene->addLine("<<x0<<", "<<y0<<", "<<x1<<", "<<y1<<", pen);\n";
                 break;
-            //*
+            // *
             case 1110: // Y1 не попал в диапазон
-                //* if(this->debug) */ std::cout << "Пограничная ситуация this->scene->addLine("<<cnv_x0<<", "<<cnv_y0<<",  "<<cnv_x1<<", "<<cnv_y1<<",  pen);\n";
+                // * if(this->debug) * / std::cout << "Пограничная ситуация this->scene->addLine("<<cnv_x0<<", "<<cnv_y0<<",  "<<cnv_x1<<", "<<cnv_y1<<",  pen);\n";
                 std::cout << "Пограничная ситуация (Y1) this->scene->addLine("<<x0<<", "<<y0<<",  "<<x1<<", "<<y1<<",  pen);\n";
                 correctDot = this->CorrectY1(x0, y0, x1, y1);
                 cnv_x1 = (correctDot[2] - X) / X_PsiP;
@@ -124,11 +200,11 @@ void Graphics::ShowLines() {
                 this->scene->addLine(cnv_x0, cnv_y0,  cnv_x1, cnv_y1,  pen);
                 break;
             case 1101: // X1 не попал в диапазон
-                //* if(this->debug) */ std::cout << "Пограничная ситуация this->scene->addLine("<<cnv_x0<<", "<<cnv_y0<<",  "<<cnv_x1<<", "<<cnv_y1<<",  pen);\n";
+                // * if(this->debug) * / std::cout << "Пограничная ситуация this->scene->addLine("<<cnv_x0<<", "<<cnv_y0<<",  "<<cnv_x1<<", "<<cnv_y1<<",  pen);\n";
                 std::cout << "Пограничная ситуация this->scene->addLine("<<x0<<", "<<y0<<",  "<<x1<<", "<<y1<<",  pen);\n";
                 break;
             case 1011: // Y0 не попал в диапазон
-                //* if(this->debug) */ std::cout << "Пограничная ситуация this->scene->addLine("<<cnv_x0<<", "<<cnv_y0<<",  "<<cnv_x1<<", "<<cnv_y1<<",  pen);\n";
+                // * if(this->debug) * / std::cout << "Пограничная ситуация this->scene->addLine("<<cnv_x0<<", "<<cnv_y0<<",  "<<cnv_x1<<", "<<cnv_y1<<",  pen);\n";
                 std::cout << "Пограничная ситуация (Y0) this->scene->addLine("<<x0<<", "<<y0<<",  "<<x1<<", "<<y1<<",  pen);\n";
                 correctDot = this->CorrectY0(x0, y0, x1, y1);
                 cnv_x0 = (correctDot[0] - X)  / X_PsiP;
@@ -137,15 +213,16 @@ void Graphics::ShowLines() {
                 //std::cout << ;
                 break;
             case 111: // X0 не попал в диапазон
-                //* if(this->debug) */ std::cout << "Пограничная ситуация this->scene->addLine("<<cnv_x0<<", "<<cnv_y0<<",  "<<cnv_x1<<", "<<cnv_y1<<",  pen);\n";
+                // * if(this->debug) * / std::cout << "Пограничная ситуация this->scene->addLine("<<cnv_x0<<", "<<cnv_y0<<",  "<<cnv_x1<<", "<<cnv_y1<<",  pen);\n";
                 std::cout << "Пограничная ситуация this->scene->addLine("<<x0<<", "<<y0<<",  "<<x1<<", "<<y1<<",  pen);\n";
                 break;
-            //*/
+            // * /
             default:
-                //* if(this->debug) */ std::cout << "Пропускаем this->scene->addLine("<<cnv_x0<<", "<<cnv_y0<<",  "<<cnv_x1<<", "<<cnv_y1<<",  pen);\n";
+                // * if(this->debug) * / std::cout << "Пропускаем this->scene->addLine("<<cnv_x0<<", "<<cnv_y0<<",  "<<cnv_x1<<", "<<cnv_y1<<",  pen);\n";
                 std::cout << "Пропускаем this->scene->addLine("<<x0<<", "<<y0<<",  "<<x1<<", "<<y1<<",  pen);\n";
                 break;
             }
+            */
 
             /*
             if(condition_x0 && condition_y0 && condition_x1 && condition_y1) {
@@ -159,7 +236,7 @@ void Graphics::ShowLines() {
 
 
 double Graphics::calculateYValue(double X) {
-    return -(X * X);
+    return X * X;
 }
 
 
@@ -175,8 +252,8 @@ double *Graphics::CorrectY0(double X0, double Y0, double X1, double Y1) {
 
     double deviation  = differenceY / differenceXDots; // рассчитываем допустимое отклонение от края координатной плоскости
     deviation = deviation * (deviation > 0 ? 1 : -1);
-    double cpY_dev  = cpY - deviation;   // Допустимая точка отклонения по верхнему краю
-    double cpYe_dev = cpYe + deviation;  // Допустимая точка отклонения по нижнему  краю
+    double cpY_dev  = cpY  - (deviation * 1.2); // Допустимая точка отклонения по верхнему краю
+    double cpYe_dev = cpYe + (deviation * 1.2); // Допустимая точка отклонения по нижнему  краю
 
     //int    differenceXSteps = differenceXDots - 1;
     double differenceXStep  = differenceX / differenceXDots;
@@ -228,8 +305,8 @@ double *Graphics::CorrectY1(double X0, double Y0, double X1, double Y1) {
     int    differenceXDots  = 10;
     double deviation  = differenceY / differenceXDots; // рассчитываем допустимое отклонение от края координатной плоскости
     deviation = deviation * (deviation > 0 ? 1 : -1);
-    double cpYe_dev = cpYe + deviation; // Допустимая точка отклонения по верхнему краю
-    double cpY_dev  = cpY  - deviation; // Допустимая точка отклонения по нижнему  краю
+    double cpYe_dev = cpYe + (deviation * 1.2); // Допустимая точка отклонения по верхнему краю
+    double cpY_dev  = cpY  - (deviation * 1.2); // Допустимая точка отклонения по нижнему  краю
 
     //int    differenceXSteps = differenceXDots - 1;
     double differenceXStep  = differenceX / differenceXDots;
