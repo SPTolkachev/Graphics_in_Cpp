@@ -41,6 +41,18 @@ private slots:
 
     void on_DebugFlag_stateChanged(int arg1);
 
+    void on_gFunc0_textChanged(const QString &arg1);
+
+    void on_color_graph0_currentIndexChanged(int index);
+
+    void on_gFunc1_textChanged(const QString &arg1);
+
+    void on_color_graph1_currentIndexChanged(int index);
+
+    void on_gFunc2_textChanged(const QString &arg1);
+
+    void on_color_graph2_currentIndexChanged(int index);
+
 private:
     Ui::MainWindow    *ui;
     QGraphicsScene *scene;

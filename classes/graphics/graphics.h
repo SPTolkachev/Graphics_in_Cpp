@@ -33,16 +33,16 @@ protected:
     std::string arrayGraphics[graphics_numbers];
     int         arrayGraphicsColors[graphics_numbers];
 
-    static const int  usedColorsNums = 8;
+    static const int  usedColorsNums   = 8;
     QColor *usedColors[usedColorsNums] = {
-        QColor(  0,    0,    0), // black
-        QColor(  0,    0,  255), // blue
-        QColor(255,    0,  255), // fuchsia
-        QColor(255,  215,    0), // gold
-        QColor(  0,  128,    0), // green
-        QColor(173,  255,   47), // greenyellow
-        QColor(128,  128,  128), // grey
-        QColor(255,    0,    0), // red
+        new QColor(  0,    0,    0), // black
+        new QColor(  0,    0,  255), // blue
+        new QColor(255,    0,  255), // fuchsia
+        new QColor(255,  215,    0), // gold
+        new QColor(  0,  128,    0), // green
+        new QColor(173,  255,   47), // greenyellow
+        new QColor(128,  128,  128), // grey
+        new QColor(255,    0,    0), // red
     };
 
 

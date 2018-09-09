@@ -293,7 +293,7 @@
      </widget>
     </widget>
    </widget>
-   <widget class="QLineEdit" name="gFunc1">
+   <widget class="QLineEdit" name="gFunc0">
     <property name="geometry">
      <rect>
       <x>370</x>
@@ -306,7 +306,7 @@
      <number>500</number>
     </property>
    </widget>
-   <widget class="QComboBox" name="color_graph1">
+   <widget class="QComboBox" name="color_graph0">
     <property name="geometry">
      <rect>
       <x>550</x>
@@ -394,7 +394,7 @@
      </property>
     </item>
    </widget>
-   <widget class="QLineEdit" name="gFunc2">
+   <widget class="QLineEdit" name="gFunc1">
     <property name="geometry">
      <rect>
       <x>370</x>
@@ -407,7 +407,7 @@
      <number>500</number>
     </property>
    </widget>
-   <widget class="QLineEdit" name="gFunc3">
+   <widget class="QLineEdit" name="gFunc2">
     <property name="geometry">
      <rect>
       <x>370</x>
@@ -420,7 +420,7 @@
      <number>500</number>
     </property>
    </widget>
-   <widget class="QComboBox" name="color_graph2">
+   <widget class="QComboBox" name="color_graph1">
     <property name="geometry">
      <rect>
       <x>550</x>
@@ -508,7 +508,7 @@
      </property>
     </item>
    </widget>
-   <widget class="QComboBox" name="color_graph3">
+   <widget class="QComboBox" name="color_graph2">
     <property name="geometry">
      <rect>
       <x>550</x>
