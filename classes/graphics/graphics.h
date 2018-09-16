@@ -16,7 +16,7 @@ protected:
     QWidget       *canvas;
 
     static const int  graphics_numbers = 3;
-    static const int dots = 101;
+    static const int dots = 1001;
 
     double (*arrayXCoords)[dots] = new double[graphics_numbers][dots];
     double (*arrayYCoords)[dots] = new double[graphics_numbers][dots];
@@ -68,6 +68,5 @@ public:
     int     GetDots();
     void    ShowLines();
     void    Show();
-
 };
 #endif // GRAPHICS_H

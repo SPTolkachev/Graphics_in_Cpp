@@ -34,7 +34,7 @@ void AddVariable(VariablesList *list, double value, char *name) {
         var->value = value; // присвоение нового значения
     }
     else {
-        Variable *tmp = (Variable*)malloc(sizeof(Variable));
+        Variable *tmp = new Variable;//(Variable*)malloc(sizeof(Variable));
 
         if (tmp) {
             if (list->head == NULL) {
@@ -164,7 +164,7 @@ double CalculateMathExpression(ExpressionList *list, VariablesList *var_list) {
  * @return MathAtom *
  */
 MathAtom *CreateMathAtom(double value, char *operation) {
-    MathAtom *atom = (MathAtom*)malloc(sizeof(MathAtom));
+    MathAtom *atom = new MathAtom;//(MathAtom*)malloc(sizeof(MathAtom));
 
     if (atom) {
         atom->next = NULL;
@@ -195,7 +195,7 @@ MathAtom *CreateMathAtom(double value, char *operation) {
  */
 ExpressionList *CreateMathList() {
     // Выделяем память
-    ExpressionList *list = (ExpressionList*)malloc(sizeof(ExpressionList));
+    ExpressionList *list = new ExpressionList;//(ExpressionList*)malloc(sizeof(ExpressionList));
 
     // Инициализируем переменные
     list->head = NULL;
@@ -218,7 +218,7 @@ ExpressionList *CreateMathList() {
  */
 VariablesList *CreateVariablesList() {
     // Выделяем память
-    VariablesList *list = (VariablesList*)malloc(sizeof(VariablesList));
+    VariablesList *list = new VariablesList;//(VariablesList*)malloc(sizeof(VariablesList));
 
     // Инициализируем переменные
     list->head = NULL;
@@ -246,11 +246,12 @@ void DeleteMathList(ExpressionList *dList) {
 
     while (atm) { // Удаление элементов списка
         exp_next = atm->next;
-        free(atm);
+        delete atm;//free(atm);
         atm = exp_next;
     }
 
-    free(dList); // Удаление списка
+    delete atm;
+    //free(dList); // Удаление списка
 }
 
 
@@ -302,7 +303,8 @@ MathAtom *DeleteNthMathElement(ExpressionList *list, MathAtom *NthElement) {
         }
     }
 
-    free(NthElement);
+    delete NthElement;
+    //free(NthElement);
     list->size--;
 
     return returnElem;
@@ -327,11 +329,13 @@ void DeleteVarList(VariablesList *dList) {
 
     while (var) { // Удаление элементов списка
         var_next = var->next;
-        free(var);
+        delete var;
+        //free(var);
         var = var_next;
     }
 
-    free(dList); // Удаление списка
+    delete dList;
+    //free(dList); // Удаление списка
 }
 
 
@@ -570,7 +574,6 @@ MathAtom *NumberParser(char *expression, int *cChar) {
  * @return double
  */
 double ParserDoubleFromStr(char *strDouble) {
-    //std::cout << "*** " << strDouble << "\n";
     char c;
     int carentChar = 0;
 
@@ -597,12 +600,9 @@ double ParserDoubleFromStr(char *strDouble) {
             powtype = strDouble[carentChar+1];
             Exp = ParserDoubleFromStr(powstr);
 
-            //std::cout << powtype << " " << Exp << "\n";
             isExp = true;
-            // carentChar
 
             strDouble = Substr(strDouble, 0, carentChar-1);
-            //std::cout << "strDouble: " << strDouble << "\n";
             break;
         }
 
@@ -683,7 +683,7 @@ double ParserMathExpression(char *expression, VariablesList *varList) {
     }
 
     // Запускаем инициализатор переменных
-    VariableInitializer(expression, varList);
+    VariableInitializer(expression, varList); // Проблема здесь
 
     // Переводим строку в список-репрезентацию мат. выражения
     ParserStrMathExpression(mathList, varList, expression);
@@ -696,7 +696,6 @@ double ParserMathExpression(char *expression, VariablesList *varList) {
     if (varDeletedFlag) { // Удаляем список переменных если это внешний (первый) вызов функции
         DeleteVarList(varList);
     }
-
     return result;
 }
 
@@ -811,7 +810,7 @@ double PowTen(int num) {
     else {
         return 0.1 * PowTen(++num);
     }
-};
+}
 
 
 
@@ -1015,14 +1014,14 @@ void VariableInitializer(char *expression, VariablesList *var_list) {
     char c;
     int carentChar = 0;
     int initialization;
-
-    while ((c = expression[carentChar]) != '\0') {
+    int expLength = strlen(expression);
+    while ((c = expression[carentChar]) != '\0' && carentChar < expLength) {
         if (c == '$' && IsVarChar(expression[carentChar + 1], 0)) {
             int varName_from = ++carentChar;
             int varName_to = varName_from;
 
             // определение имени переменной
-            while ((c = expression[carentChar]) != '\0' && (IsVarChar(c, 1))) {
+            while ((c = expression[carentChar]) != '\0' && (IsVarChar(c, 1)) && carentChar < expLength) {
                 varName_to = carentChar;
                 carentChar++;
             }
@@ -1031,7 +1030,7 @@ void VariableInitializer(char *expression, VariablesList *var_list) {
             int exp_from = 0;
             int exp_to = 0;
             int nested_level = 0;
-            while ((c = expression[carentChar]) != '\0') {
+            while ((c = expression[carentChar]) != '\0' && carentChar < expLength) {
                 if (initialization == 0 && c == '=') {
                     initialization = 1;
                     exp_from = carentChar + 1;
@@ -1065,6 +1064,7 @@ void VariableInitializer(char *expression, VariablesList *var_list) {
                 AddVariable(var_list, var_value, var_name);
             }
             else if (initialization == 1) {
+                std::cout << "Ошибка имени переменной\n";
                 // генерим ошибку
                 char *var_name = Substr(expression, varName_from, varName_to);
                 char *place_err = Substr(expression, varName_from, exp_to);
@@ -1080,11 +1080,11 @@ void VariableInitializer(char *expression, VariablesList *var_list) {
         else if (c == '$' && !IsVarChar(expression[carentChar + 1], 0)) {
             int var_name_from = carentChar;
 
-            while ((c = expression[carentChar]) != '\0' && !IsSpaceChar(c)) {
+            while ((c = expression[carentChar]) != '\0' && !IsSpaceChar(c) && carentChar < expLength) {
                 carentChar++;
             }
 
-            std::cout << "\nОшибка. '" << Substr(expression, var_name_from, carentChar - 1) << "' некорректное имя переменной";
+            std::cout << "\nОшибка. '" << Substr(expression, var_name_from, carentChar - 1) << "' некорректное имя переменной" << "'" << expression << "'";
             getchar(); // ожидание нажатия клавиши
             exit(3); // завершаем программу и передаём код завершения
         }

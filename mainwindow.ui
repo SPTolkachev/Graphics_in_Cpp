@@ -312,7 +312,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>$x</string>
+     <string>1 / $x</string>
     </property>
     <property name="maxLength">
      <number>500</number>
@@ -415,6 +415,9 @@
       <height>22</height>
      </rect>
     </property>
+    <property name="text">
+     <string>$x * $x</string>
+    </property>
     <property name="maxLength">
      <number>500</number>
     </property>
@@ -427,6 +430,9 @@
       <width>171</width>
       <height>22</height>
      </rect>
+    </property>
+    <property name="text">
+     <string>1 / sin($x * $x * $x)</string>
     </property>
     <property name="maxLength">
      <number>500</number>

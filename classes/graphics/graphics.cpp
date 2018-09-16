@@ -145,7 +145,6 @@ double Graphics::CalculateYValue(std::string exp, double X) {
         char * charexpression = new char [expression.length()+1];
         strcpy (charexpression, expression.c_str());
 
-        //std::cout << expression << " = " << result << "\n";
         result = ParserMathExpression(charexpression);
     }
 
